@@ -15,24 +15,25 @@ const Usuarios = () => {
     const isCellOccupied = events.some(event => {
       return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
     });
-
+  
     if (isCellOccupied) {
       alert('Esta franja horaria ya está ocupada. Por favor, elige otro horario.');
       return;
     }
-
+  
     // Si no está ocupada, se permite la reserva
-    const title = prompt('Ingrese su nombre:');
-    if (title) {
+    const formData = await showReservationForm(); // Mostrar el formulario y esperar a que el usuario complete los datos
+    if (formData) {
       const eventId = generateUniqueId(6);
       const eventData = {
         eventId,
-        title,
+        ...formData,
         start,
         end,
       };
+      console.log(eventData);
       localStorage.setItem('eventData', JSON.stringify(eventData));
-console.log(eventData)
+  
       // Intenta guardar el evento en la base de datos
       try {
         const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
@@ -41,8 +42,7 @@ console.log(eventData)
           id: response.data.id,
         };
         setEvents([...events, newEvent]);
-
-        
+  
         // Después de guardar el evento, procede a la página de pago
         redirectToPayment();
       } catch (error) {
@@ -50,7 +50,43 @@ console.log(eventData)
       }
     }
   };
-
+  
+  const showReservationForm = () => {
+    return new Promise((resolve) => {
+      const formData = {};
+      const formElement = document.createElement('div');
+      formElement.innerHTML = `
+        <h2>Ingrese sus datos</h2>
+        <form id="reservationForm">
+          <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="string" class="form-control" id="email" placeholder="Ingrese su correo electrónico" required>
+          </div>
+          <div class="form-group">
+            <label for="telefono">Teléfono:</label>
+            <input type="number" class="form-control" id="telefono" placeholder="Ingrese su teléfono" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+      `;
+  
+      const form = formElement.querySelector('#reservationForm');
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        formData.nombre = form.querySelector('#nombre').value;
+        formData.email = form.querySelector('#email').value;
+        formData.telefono = form.querySelector('#telefono').value;
+        resolve(formData);
+  
+      });
+  
+      document.body.appendChild(formElement);
+    });
+  };
 
   const generateUniqueId = (length) => {
     let result = '';

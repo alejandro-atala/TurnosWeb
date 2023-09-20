@@ -7,7 +7,14 @@ export class Turno {
   id: number;
 
   @Column()
-  title: string;
+  nombre: string;
+  
+  @Column()
+  email: string;
+  
+  @Column({ type: 'varchar', length: 15 }) // Asumiendo que un número de teléfono tiene hasta 15 caracteres
+  telefono: string;
+  
 
   @Column()
   start: Date;
