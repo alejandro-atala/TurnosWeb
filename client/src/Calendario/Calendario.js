@@ -53,7 +53,7 @@ const MyCalendar = () => {
         end: new Date(event.end),
         title: (
           <div style={{ display: 'flex',alignItems: 'center' }}>
-            <div>{event.title}</div>
+            <div>{event.nombre}</div>
             <i
               className="fas fa-trash-alt"
               style={{ cursor: 'pointer', color: 'red', marginLeft: '50px' }}

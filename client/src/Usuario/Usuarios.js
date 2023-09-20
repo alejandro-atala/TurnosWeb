@@ -3,6 +3,9 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 
 const localizer = momentLocalizer(moment);
 
@@ -53,40 +56,68 @@ const Usuarios = () => {
   
   const showReservationForm = () => {
     return new Promise((resolve) => {
-      const formData = {};
-      const formElement = document.createElement('div');
-      formElement.innerHTML = `
+      const formContainer = document.createElement('div');
+      formContainer.style.position = 'absolute';
+      formContainer.style.top = '30%';
+      formContainer.style.left = '50%';
+      formContainer.style.transform = 'translate(-50%, -50%)';
+      formContainer.style.backgroundColor = 'rgba(78, 202, 155, 1)';
+      formContainer.style.padding = '20px';
+      formContainer.style.zIndex = '1000';  // Índice Z alto para estar encima del calendario
+      formContainer.style.width = '50%';
+      formContainer.style.textAlign = 'center';  // Centrar texto
+  
+      formContainer.innerHTML = `
         <h2>Ingrese sus datos</h2>
         <form id="reservationForm">
           <div class="form-group">
             <label for="nombre">Nombre:</label>
-            <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" required>
+            <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" required />
           </div>
           <div class="form-group">
             <label for="email">Email:</label>
-            <input type="string" class="form-control" id="email" placeholder="Ingrese su correo electrónico" required>
+            <input type="email" class="form-control" id="email" placeholder="Ingrese su correo electrónico" required />
           </div>
           <div class="form-group">
             <label for="telefono">Teléfono:</label>
-            <input type="number" class="form-control" id="telefono" placeholder="Ingrese su teléfono" required>
+            <input type="tel" class="form-control" id="telefono" placeholder="Ingrese su teléfono" required />
           </div>
-          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+          <button type="button" class="btn btn-secondary mt-3" id="cancelButton">Cancelar</button>
         </form>
       `;
   
-      const form = formElement.querySelector('#reservationForm');
+      const form = formContainer.querySelector('#reservationForm');
+      const cancelButton = formContainer.querySelector('#cancelButton');
+      
       form.addEventListener('submit', (event) => {
         event.preventDefault();
-        formData.nombre = form.querySelector('#nombre').value;
-        formData.email = form.querySelector('#email').value;
-        formData.telefono = form.querySelector('#telefono').value;
+        const formData = {
+          nombre: form.querySelector('#nombre').value,
+          email: form.querySelector('#email').value,
+          telefono: form.querySelector('#telefono').value,
+        };
         resolve(formData);
-  
+        formContainer.remove();  // Eliminar el formulario después de enviar
       });
   
-      document.body.appendChild(formElement);
+      cancelButton.addEventListener('click', () => {
+        formContainer.remove();  // Cerrar el formulario al hacer clic en "Cancelar"
+      });
+  
+      document.body.appendChild(formContainer);
     });
   };
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   const generateUniqueId = (length) => {
     let result = '';
