@@ -20,8 +20,20 @@ export class TurnoService {
     return formattedEvent;
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const result = await this.turnoRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Turno with ID ${id} not found`);
+    }
+  }
+
+  async deleteId(id: number): Promise<void> {
+    const result = await this.turnoRepository
+    .createQueryBuilder()
+    .delete()
+    .where("eventId = :id", { id })
+    .execute();
+  
     if (result.affected === 0) {
       throw new NotFoundException(`Turno with ID ${id} not found`);
     }

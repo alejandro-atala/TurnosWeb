@@ -1,5 +1,5 @@
 // src/turno/turno.controller.ts
-import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, ParseIntPipe } from '@nestjs/common';
 import { TurnoService } from './turnos.service';
 import { Turno } from './entities/turno.entity';
 
@@ -18,7 +18,12 @@ export class TurnoController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<void> {
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.turnoService.delete(id);
+  }
+
+  @Delete('borrar/:id')
+  async deleteId(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.turnoService.deleteId(id);
   }
 }

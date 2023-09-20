@@ -9,6 +9,7 @@ export class MercadoPagoController {
   async createPreference(@Body() preferenceData) {
     try {
       const response = await this.mercadoPagoService.createPreference(preferenceData);
+
       return { id: response.body.id };
     } catch (error) {
       console.error(error);

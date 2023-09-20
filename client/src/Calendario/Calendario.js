@@ -36,11 +36,12 @@ const MyCalendar = () => {
   const handleDeleteEvent = async (eventId) => {
     try {
       await axios.delete(`http://localhost:3000/turnos/${eventId}`);
-      setEvents(events.filter(event => event.id !== eventId));
+      setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
     } catch (error) {
       console.error('Error al eliminar turno:', error);
     }
   };
+  
 
   const getEvents = async () => {
     try {

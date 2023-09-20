@@ -24,12 +24,15 @@ const Usuarios = () => {
     // Si no está ocupada, se permite la reserva
     const title = prompt('Ingrese su nombre:');
     if (title) {
+      const eventId = generateUniqueId(6);
       const eventData = {
+        eventId,
         title,
         start,
         end,
       };
-
+      localStorage.setItem('eventData', JSON.stringify(eventData));
+console.log(eventData)
       // Intenta guardar el evento en la base de datos
       try {
         const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
@@ -48,10 +51,22 @@ const Usuarios = () => {
     }
   };
 
+
+  const generateUniqueId = (length) => {
+    let result = '';
+    const characters = '0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  };
+
   const redirectToPayment = async () => {
     const preferenceData = {
       items: [
         {
+          
           title: 'Reserva de turno',
           unit_price: 4500, // Precio en centavos (ejemplo: $1.00)
           quantity: 1,
@@ -62,6 +77,7 @@ const Usuarios = () => {
         failure: 'http://localhost:3001/usuarios?payment_failure=true', // URL de fallo
         pending: 'http://localhost:3001/usuarios?payment_pending=true', // URL pendiente
       },
+      // notification_url: 'http://localhost:3001/usuarios'
     };
 
     try {
@@ -92,16 +108,23 @@ const Usuarios = () => {
   };
 
   const handlePaymentFailure = async () => {
-    // Eliminar el turno si el pago falló
+    const eventDataFromLocalStorage = localStorage.getItem('eventData');
+    const selectedEvent = eventDataFromLocalStorage ? JSON.parse(eventDataFromLocalStorage) : null;
+  
+    console.log(selectedEvent)
     if (selectedEvent) {
       try {
-        await axios.delete(`http://localhost:3000/turnos/${selectedEvent.id}`);
+        await axios.delete(`http://localhost:3000/turnos/borrar/${selectedEvent.eventId}`);
         alert('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
+        
+        // After deleting, refresh the events list to reflect the change
+        getEvents();
       } catch (error) {
         console.error('Error al eliminar el turno:', error);
       }
     }
   };
+  
 
   useEffect(() => {
     getEvents();

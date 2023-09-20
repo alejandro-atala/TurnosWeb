@@ -14,4 +14,9 @@ export class Turno {
 
   @Column()
   end: Date;
+
+
+  @Column()
+  eventId: number ;
+ 
 }
