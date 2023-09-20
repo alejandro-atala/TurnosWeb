@@ -56,16 +56,27 @@ const Usuarios = () => {
   
   const showReservationForm = () => {
     return new Promise((resolve) => {
+      // Crear una capa semi-transparente para opacar el fondo
+      const overlay = document.createElement('div');
+      overlay.style.position = 'fixed';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Opacidad del 50%
+  
+      // Crear el contenedor del formulario
       const formContainer = document.createElement('div');
       formContainer.style.position = 'absolute';
       formContainer.style.top = '30%';
       formContainer.style.left = '50%';
       formContainer.style.transform = 'translate(-50%, -50%)';
-      formContainer.style.backgroundColor = 'rgba(78, 202, 155, 1)';
+      formContainer.style.backgroundColor = 'rgba(78, 202, 155,1)';
       formContainer.style.padding = '20px';
-      formContainer.style.zIndex = '1000';  // Índice Z alto para estar encima del calendario
+      formContainer.style.zIndex = '1000'; // Índice Z alto para estar encima del calendario
       formContainer.style.width = '50%';
-      formContainer.style.textAlign = 'center';  // Centrar texto
+      formContainer.style.textAlign = 'center'; // Centrar texto
+  
   
       formContainer.innerHTML = `
         <h2>Ingrese sus datos</h2>
@@ -88,31 +99,30 @@ const Usuarios = () => {
       `;
   
       const form = formContainer.querySelector('#reservationForm');
-      const cancelButton = formContainer.querySelector('#cancelButton');
-      
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const formData = {
-          nombre: form.querySelector('#nombre').value,
-          email: form.querySelector('#email').value,
-          telefono: form.querySelector('#telefono').value,
-        };
-        resolve(formData);
-        formContainer.remove();  // Eliminar el formulario después de enviar
-      });
-  
-      cancelButton.addEventListener('click', () => {
-        formContainer.remove();  // Cerrar el formulario al hacer clic en "Cancelar"
-      });
-  
-      document.body.appendChild(formContainer);
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = {
+        nombre: form.querySelector('#nombre').value,
+        email: form.querySelector('#email').value,
+        telefono: form.querySelector('#telefono').value,
+      };
+      resolve(formData);
+      document.body.removeChild(overlay); // Eliminar la capa de opacidad
+      formContainer.remove(); // Eliminar el formulario después de enviar
     });
-  };
-  
-  
-  
-  
-  
+
+    // Evento al cancelar el formulario
+    const cancelButton = formContainer.querySelector('#cancelButton');
+    cancelButton.addEventListener('click', () => {
+      document.body.removeChild(overlay); // Eliminar la capa de opacidad
+      formContainer.remove(); // Cerrar el formulario al hacer clic en "Cancelar"
+    });
+
+    // Agregar los elementos al cuerpo del documento
+    overlay.appendChild(formContainer);
+    document.body.appendChild(overlay);
+  });
+};
   
   
   
@@ -213,7 +223,7 @@ const Usuarios = () => {
         events={events}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 500 }}
+        style={{ height: 600 }}
         selectable
         onSelectSlot={handleSelect}
         timeslots={1}

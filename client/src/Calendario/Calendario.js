@@ -41,7 +41,7 @@ const MyCalendar = () => {
       console.error('Error al eliminar turno:', error);
     }
   };
-  
+
 
   const getEvents = async () => {
     try {
@@ -52,8 +52,10 @@ const MyCalendar = () => {
         start: new Date(event.start),
         end: new Date(event.end),
         title: (
-          <div style={{ display: 'flex',alignItems: 'center' }}>
-            <div>{event.nombre}</div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+
+            <div style={{ marginRight: '30px' }}>{event.nombre}</div>
+            <div>{event.telefono}</div>
             <i
               className="fas fa-trash-alt"
               style={{ cursor: 'pointer', color: 'red', marginLeft: '50px' }}
@@ -67,7 +69,7 @@ const MyCalendar = () => {
       console.error('Error al obtener turnos:', error);
     }
   };
-  
+
 
   useEffect(() => {
     getEvents();
