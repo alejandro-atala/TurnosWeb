@@ -79,7 +79,7 @@ const MyCalendar = () => {
         events={events}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 500 }}
+        style={{ height: 600 }}
         selectable
         onSelectSlot={handleSelect}
         timeslots={1} step={60}
