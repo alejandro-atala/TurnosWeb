@@ -5,39 +5,57 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
-
 const localizer = momentLocalizer(moment);
 
 const Usuarios = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedPaymentOption, setSelectedPaymentOption] = useState(null); // Initialize with a default value
+
+
+  const handleDOMContentLoaded = () => {
+    // Call your function here that requires the DOM to be loaded
+  
+  };
+
+  useEffect(() => {
+    // Listen for the DOMContentLoaded event
+    document.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener('DOMContentLoaded', handleDOMContentLoaded);
+    };
+  }, []); // Empty dependency array to run this effect once
+
+  
 
   const handleSelect = async ({ start, end }) => {
-    // Verificamos si la celda está ocupada
     const isCellOccupied = events.some(event => {
       return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
     });
-  
+
     if (isCellOccupied) {
       alert('Esta franja horaria ya está ocupada. Por favor, elige otro horario.');
       return;
     }
-  
-    // Si no está ocupada, se permite la reserva
-    const formData = await showReservationForm(); // Mostrar el formulario y esperar a que el usuario complete los datos
+
+    const formData = await showReservationForm();
+    console.log(formData);
     if (formData) {
       const eventId = generateUniqueId(6);
+      console.log(formData.paymentOption)
       const eventData = {
         eventId,
         ...formData,
         start,
         end,
       };
-      console.log(eventData);
-      localStorage.setItem('eventData', JSON.stringify(eventData));
+
+      updatePaymentDetails(formData.paymentOption);
   
-      // Intenta guardar el evento en la base de datos
+      localStorage.setItem('eventData', JSON.stringify(eventData));
+
       try {
         const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
         const newEvent = {
@@ -45,27 +63,24 @@ const Usuarios = () => {
           id: response.data.id,
         };
         setEvents([...events, newEvent]);
-  
-        // Después de guardar el evento, procede a la página de pago
-        redirectToPayment();
+
       } catch (error) {
         console.error('Error al reservar turno:', error);
       }
     }
+    
   };
-  
+
   const showReservationForm = () => {
     return new Promise((resolve) => {
-      // Crear una capa semi-transparente para opacar el fondo
       const overlay = document.createElement('div');
       overlay.style.position = 'fixed';
       overlay.style.top = '0';
       overlay.style.left = '0';
       overlay.style.width = '100%';
       overlay.style.height = '100%';
-      overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Opacidad del 50%
-  
-      // Crear el contenedor del formulario
+      overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+
       const formContainer = document.createElement('div');
       formContainer.style.position = 'absolute';
       formContainer.style.top = '30%';
@@ -73,11 +88,10 @@ const Usuarios = () => {
       formContainer.style.transform = 'translate(-50%, -50%)';
       formContainer.style.backgroundColor = 'rgba(78, 202, 155,1)';
       formContainer.style.padding = '20px';
-      formContainer.style.zIndex = '1000'; // Índice Z alto para estar encima del calendario
+      formContainer.style.zIndex = '1000';
       formContainer.style.width = '50%';
-      formContainer.style.textAlign = 'center'; // Centrar texto
-  
-  
+      formContainer.style.textAlign = 'center';
+
       formContainer.innerHTML = `
         <h2>Ingrese sus datos</h2>
         <form id="reservationForm">
@@ -93,41 +107,48 @@ const Usuarios = () => {
             <label for="telefono">Teléfono:</label>
             <input type="tel" class="form-control" id="telefono" placeholder="Ingrese su teléfono" required />
           </div>
+          <div class="form-group">
+          <label for="paymentOption">Seleccione una opción de pago:</label>
+          <select id="paymentOption" name="paymentOption">
+          <option  value="disable">Seleccione tipo</option>
+            <option  value="option1">Opción 1</option>
+            <option  value="option2">Opción 2</option>
+          </select>
+        </div>
+          </div>
           <button type="submit" class="btn btn-primary mt-3">Guardar</button>
           <button type="button" class="btn btn-secondary mt-3" id="cancelButton">Cancelar</button>
         </form>
       `;
-  
+
       const form = formContainer.querySelector('#reservationForm');
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const formData = {
-        nombre: form.querySelector('#nombre').value,
-        email: form.querySelector('#email').value,
-        telefono: form.querySelector('#telefono').value,
-      };
-      resolve(formData);
-      document.body.removeChild(overlay); // Eliminar la capa de opacidad
-      formContainer.remove(); // Eliminar el formulario después de enviar
-    });
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = {
+          nombre: form.querySelector('#nombre').value,
+          email: form.querySelector('#email').value,
+          telefono: form.querySelector('#telefono').value,
+          paymentOption: form.querySelector('#paymentOption').value,
+        };
+  
+        // Update the state with the selected payment option
+        setSelectedPaymentOption(formData.paymentOption);
+  
+        resolve(formData);
+        document.body.removeChild(overlay);
+        formContainer.remove();
+      });
 
-    // Evento al cancelar el formulario
-    const cancelButton = formContainer.querySelector('#cancelButton');
-    cancelButton.addEventListener('click', () => {
-      document.body.removeChild(overlay); // Eliminar la capa de opacidad
-      formContainer.remove(); // Cerrar el formulario al hacer clic en "Cancelar"
-    });
+      const cancelButton = formContainer.querySelector('#cancelButton');
+      cancelButton.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        formContainer.remove();
+      });
 
-    // Agregar los elementos al cuerpo del documento
-    overlay.appendChild(formContainer);
-    document.body.appendChild(overlay);
-  });
-};
-  
-  
-  
-  
-  
+      overlay.appendChild(formContainer);
+      document.body.appendChild(overlay);
+    });
+  };
 
   const generateUniqueId = (length) => {
     let result = '';
@@ -139,34 +160,58 @@ const Usuarios = () => {
     return result;
   };
 
-  const redirectToPayment = async () => {
-    const preferenceData = {
-      items: [
-        {
-          
-          title: 'Reserva de turno',
-          unit_price: 4500, // Precio en centavos (ejemplo: $1.00)
-          quantity: 1,
+
+  
+  // Update payment details based on the selected option
+  
+  
+  // Update payment details based on the selected option
+  const updatePaymentDetails = async (selectedOption) => { // Accept selectedOption as an argument
+    console.log('Selected Payment Option:', selectedPaymentOption);
+  
+    if (selectedOption) {
+      let paymentTitle = 'Reserva de turno';
+      let paymentAmount = 4500;
+  
+      if (selectedOption === 'option2') {
+        paymentTitle = 'Reserva de turno - Opción 2';
+        paymentAmount = 10000;
+      }
+  
+      const preferenceData = {
+        items: [
+          {
+            title: paymentTitle,
+            unit_price: paymentAmount,
+            quantity: 1,
+          },
+        ],
+        back_urls: {
+          success: 'http://localhost:3001/usuarios',
+          failure: 'http://localhost:3001/usuarios?payment_failure=true',
+          pending: 'http://localhost:3001/usuarios?payment_pending=true',
         },
-      ],
-      back_urls: {
-        success: 'http://localhost:3001/usuarios', // URL de éxito
-        failure: 'http://localhost:3001/usuarios?payment_failure=true', // URL de fallo
-        pending: 'http://localhost:3001/usuarios?payment_pending=true', // URL pendiente
-      },
-      // notification_url: 'http://localhost:3001/usuarios'
-    };
-
-    try {
-      const response = await axios.post('http://localhost:3000/mercadopago/create_preference', preferenceData);
-      const preferenceId = response.data.id;
-
-      // Redireccionar al usuario a la página de pago de MercadoPago
-      window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
-    } catch (error) {
-      console.error('Error al crear la preferencia de MercadoPago:', error);
+      };
+  
+      console.log('Updated Payment Details:', preferenceData);
+  
+      try {
+        const response = await axios.post('http://localhost:3000/mercadopago/create_preference', preferenceData);
+        const preferenceId = response.data.id;
+   
+          window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
+  
+      } catch (error) {
+        console.error('Error al crear la preferencia de MercadoPago:', error);
+      }
+    } else {
+      console.error('No payment option selected.');
     }
   };
+  
+
+  
+  
 
   const getEvents = async () => {
     try {
@@ -176,7 +221,7 @@ const Usuarios = () => {
         id: event.id,
         start: new Date(event.start),
         end: new Date(event.end),
-        title: 'Ocupado', // Cambia el título a "Ocupado"
+        title: 'Ocupado',
       }));
       setEvents(formattedEvents);
     } catch (error) {
@@ -187,28 +232,28 @@ const Usuarios = () => {
   const handlePaymentFailure = async () => {
     const eventDataFromLocalStorage = localStorage.getItem('eventData');
     const selectedEvent = eventDataFromLocalStorage ? JSON.parse(eventDataFromLocalStorage) : null;
-  
+
     console.log(selectedEvent)
     if (selectedEvent) {
       try {
         await axios.delete(`http://localhost:3000/turnos/borrar/${selectedEvent.eventId}`);
         alert('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
-        
-        // After deleting, refresh the events list to reflect the change
         getEvents();
       } catch (error) {
         console.error('Error al eliminar el turno:', error);
       }
     }
   };
-  
+
+
+
+
 
   useEffect(() => {
     getEvents();
   }, []);
 
   useEffect(() => {
-    // Detectar si el pago falló
     const urlParams = new URLSearchParams(window.location.search);
     const paymentFailure = urlParams.get('payment_failure');
     if (paymentFailure) {
@@ -229,8 +274,8 @@ const Usuarios = () => {
         timeslots={1}
         step={60}
         defaultView={'work_week'}
-        min={new Date(0, 0, 0, 8, 0, 0)} // Hora mínima: 8:00 AM
-        max={new Date(0, 0, 0, 18, 0, 0)} // Hora máxima: 6:00 PM
+        min={new Date(0, 0, 0, 8, 0, 0)}
+        max={new Date(0, 0, 0, 18, 0, 0)}
         views={['day', 'work_week']}
       />
     </div>
@@ -238,3 +283,5 @@ const Usuarios = () => {
 };
 
 export default Usuarios;
+
+
