@@ -1,12 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
+import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const localizer = momentLocalizer(moment);
 
+const messages = {
+  allDay: 'Dia Inteiro',
+  previous: '<',
+  next: 'Semana Proxima',
+  today: 'Hoy',
+  month: 'Mes',
+  week: 'Semana',
+  day: 'Dia',
+  agenda: 'Agenda',
+  date: 'Data',
+  time: 'Hora',
+  event: 'Evento',
+  showMore: (total) => `+ (${total}) Eventos`,
+
+}
 const Usuarios = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -365,6 +381,7 @@ const Usuarios = () => {
   return (
     <div>
       <Calendar
+       messages={messages}
         localizer={localizer}
         events={events}
         startAccessor="start"
