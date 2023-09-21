@@ -15,7 +15,7 @@ const Usuarios = () => {
 
   const handleDOMContentLoaded = () => {
     // Call your function here that requires the DOM to be loaded
-  
+
   };
 
   useEffect(() => {
@@ -28,23 +28,68 @@ const Usuarios = () => {
     };
   }, []); // Empty dependency array to run this effect once
 
-  
+
 
   const handleSelect = async ({ start, end }) => {
-    const isCellOccupied = events.some(event => {
+    const selectedEvent = events.find(event => {
       return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
     });
-
-    if (isCellOccupied) {
-      alert('Esta franja horaria ya está ocupada. Por favor, elige otro horario.');
-      return;
-    }
-
-    const formData = await showReservationForm();
-
-    if (formData) {
+  
+    let formData; // Initialize formData here
+    let eventData; // Initialize eventData here
+  
+  
+    if (selectedEvent) {
+      const { paymentType } = selectedEvent;
+  
+      if (paymentType === 'Individual') {
+        const isCellOccupied = events.some(event => {
+          return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
+        });
+  
+        if (isCellOccupied) {
+          alert('Esta franja horaria ya está ocupada. Por favor, elige otro horario.');
+          return;
+        }
+  
+        updatePaymentDetails(formData.paymentOption);
+        localStorage.setItem('eventData', JSON.stringify(eventData));
+  
+        try {
+          const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+          const newEvent = {
+            ...eventData,
+            id: response.data.id,
+          };
+          setEvents([...events, newEvent]);
+        } catch (error) {
+          console.error('Error al reservar turno:', error);
+        }
+      } else if (paymentType === 'Grupal') {
+        updatePaymentDetails(formData.paymentOption);
+        localStorage.setItem('eventData', JSON.stringify(eventData));
+  
+        try {
+          const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+          const newEvent = {
+            ...eventData,
+            id: response.data.id,
+          };
+          setEvents([...events, newEvent]);
+        } catch (error) {
+          console.error('Error al reservar turno:', error);
+        }
+      }
+    } else {
+      formData = await showReservationForm(); // Initialize formData here
+  
+      if (!formData) {
+        // User canceled the reservation
+        return;
+      }
+  
       const eventId = generateUniqueId(6);
-
+  
       const eventData = {
         eventId,
         ...formData,
@@ -52,26 +97,23 @@ const Usuarios = () => {
         end,
         paymentType: formData.paymentOption,
       };
-console.log(eventData);
-
-      updatePaymentDetails(formData.paymentOption);
   
-      localStorage.setItem('eventData', JSON.stringify(eventData));
-
-      try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
-        const newEvent = {
-          ...eventData,
-          id: response.data.id,
-        };
-        setEvents([...events, newEvent]);
-
-      } catch (error) {
-        console.error('Error al reservar turno:', error);
+      // Handle the reservation based on payment type (individual or grupal)
+      if (formData.paymentOption === 'Individual') {
+        // Handle individual event reservation
+        // ...
+      } else if (formData.paymentOption === 'Grupal') {
+        // Handle grupal event reservation
+        // ...
       }
     }
-    
   };
+
+
+
+
+
+
 
   const showReservationForm = () => {
     return new Promise((resolve) => {
@@ -121,7 +163,7 @@ console.log(eventData);
         <button type="button" class="btn btn-secondary mt-3" id="cancelButton">Cancelar</button>
       </form>
     `;
-    
+
 
       const form = formContainer.querySelector('#reservationForm');
       form.addEventListener('submit', (event) => {
@@ -132,10 +174,10 @@ console.log(eventData);
           telefono: form.querySelector('#telefono').value,
           paymentOption: form.querySelector('#paymentOption').value,
         };
-  
+
         // Update the state with the selected payment option
         setSelectedPaymentOption(formData.paymentOption);
-  
+
         resolve(formData);
         document.body.removeChild(overlay);
         formContainer.remove();
@@ -163,23 +205,23 @@ console.log(eventData);
   };
 
 
-  
+
   // Update payment details based on the selected option
-  
-  
+
+
   // Update payment details based on the selected option
   const updatePaymentDetails = async (selectedOption) => { // Accept selectedOption as an argument
 
-  
+
     if (selectedOption) {
       let paymentTitle = 'Reserva de turno - Sesion individual';
       let paymentAmount = 4500;
-  
+
       if (selectedOption === 'Grupal') {
         paymentTitle = 'Reserva de turno - Sesion grupal';
         paymentAmount = 10000;
       }
-  
+
       const preferenceData = {
         items: [
           {
@@ -194,15 +236,15 @@ console.log(eventData);
           pending: 'http://localhost:3001/usuarios?payment_pending=true',
         },
       };
-  
+
       console.log('Updated Payment Details:', preferenceData);
-  
+
       try {
         const response = await axios.post('http://localhost:3000/mercadopago/create_preference', preferenceData);
         const preferenceId = response.data.id;
-      
-          window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
-       
+
+        window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
+
       } catch (error) {
         console.error('Error al crear la preferencia de MercadoPago:', error);
       }
@@ -210,10 +252,10 @@ console.log(eventData);
       console.error('No payment option selected.');
     }
   };
-  
 
-  
-  
+
+
+
 
   const getEvents = async () => {
     try {
@@ -224,6 +266,8 @@ console.log(eventData);
         start: new Date(event.start),
         end: new Date(event.end),
         title: 'Ocupado',
+        paymentType: event.paymentType
+
       }));
       setEvents(formattedEvents);
     } catch (error) {
