@@ -31,18 +31,18 @@ const Usuarios = () => {
 
 
   const handleSelect = async ({ start, end }) => {
+    const isCellOccupied = events.some(event => {
+      return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
+    });
+
+    if(isCellOccupied) {
 
     const selectedEvent = events.find(event => {
       return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
     });
     console.log(selectedEvent.paymentType)
 
-
-
-
     const paymentType = selectedEvent.paymentType;
-
-
 
     if (paymentType === 'Individual') {
 
@@ -112,8 +112,10 @@ const Usuarios = () => {
       } catch (error) {
         console.error('Error al reservar turno:', error);
       }
-    } else {
-      
+    } 
+  }
+  else {
+
       const formData = await showReservationForm();
       const eventId = generateUniqueId(6);
 
