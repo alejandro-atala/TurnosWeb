@@ -341,6 +341,27 @@ const Usuarios = () => {
     }
   }, []);
 
+
+
+  const eventStyleGetter = (event) => {
+    let style = {};
+  
+    if (event.paymentType === 'Grupal') {
+      style = {
+        backgroundColor: 'rgba(132, 78, 202, 1)',
+        borderRadius: '5px',
+        color: 'white',
+        border: '1px solid #ccc',
+      };
+    }
+  
+    return {
+      style,
+    };
+  };
+  
+
+
   return (
     <div>
       <Calendar
@@ -357,6 +378,7 @@ const Usuarios = () => {
         min={new Date(0, 0, 0, 8, 0, 0)}
         max={new Date(0, 0, 0, 18, 0, 0)}
         views={['day', 'work_week']}
+        eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
       />
     </div>
   );
