@@ -55,10 +55,11 @@ const MyCalendar = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
 
             <div style={{ marginRight: '30px' }}>{event.nombre}</div>
-            <div>{event.telefono}</div>
+            <div style={{ marginRight: '30px' }}>{event.telefono}</div>
+            <div>{event.paymentType}</div>
             <i
               className="fas fa-trash-alt"
-              style={{ cursor: 'pointer', color: 'red', marginLeft: '50px' }}
+              style={{ cursor: 'pointer', color: 'red', marginLeft: '20px' }}
               onClick={() => handleDeleteEvent(event.id)}
             ></i>
           </div>

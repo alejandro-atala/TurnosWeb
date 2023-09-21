@@ -41,16 +41,18 @@ const Usuarios = () => {
     }
 
     const formData = await showReservationForm();
-    console.log(formData);
+
     if (formData) {
       const eventId = generateUniqueId(6);
-      console.log(formData.paymentOption)
+
       const eventData = {
         eventId,
         ...formData,
         start,
         end,
+        paymentType: formData.paymentOption,
       };
+console.log(eventData);
 
       updatePaymentDetails(formData.paymentOption);
   
@@ -93,33 +95,33 @@ const Usuarios = () => {
       formContainer.style.textAlign = 'center';
 
       formContainer.innerHTML = `
-        <h2>Ingrese sus datos</h2>
-        <form id="reservationForm">
-          <div class="form-group">
-            <label for="nombre">Nombre:</label>
-            <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" required />
-          </div>
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" placeholder="Ingrese su correo electrónico" required />
-          </div>
-          <div class="form-group">
-            <label for="telefono">Teléfono:</label>
-            <input type="tel" class="form-control" id="telefono" placeholder="Ingrese su teléfono" required />
-          </div>
-          <div class="form-group">
-          <label for="paymentOption">Seleccione una opción de pago:</label>
-          <select id="paymentOption" name="paymentOption">
-          <option  value="disable">Seleccione tipo</option>
-            <option  value="option1">Opción 1</option>
-            <option  value="option2">Opción 2</option>
+      <h2>Ingrese sus datos</h2>
+      <form id="reservationForm">
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" class="form-control" id="email" placeholder="Ingrese su correo electrónico" required />
+        </div>
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="tel" class="form-control" id="telefono" placeholder="Ingrese su teléfono" required />
+        </div>
+        <div class="form-group">
+          <label for="paymentOption">Seleccione un tipo de sesion</label>
+          <select id="paymentOption" name="paymentOption" class="form-control">
+            <option value="disable">Seleccione tipo</option>
+            <option value="Individual">Sesión individual</option>
+            <option value="Grupal">Sesión Grupal</option>
           </select>
         </div>
-          </div>
-          <button type="submit" class="btn btn-primary mt-3">Guardar</button>
-          <button type="button" class="btn btn-secondary mt-3" id="cancelButton">Cancelar</button>
-        </form>
-      `;
+        <button type="submit" class="btn btn-primary mt-3">Confirmar Reserva</button>
+        <button type="button" class="btn btn-secondary mt-3" id="cancelButton">Cancelar</button>
+      </form>
+    `;
+    
 
       const form = formContainer.querySelector('#reservationForm');
       form.addEventListener('submit', (event) => {
@@ -167,14 +169,14 @@ const Usuarios = () => {
   
   // Update payment details based on the selected option
   const updatePaymentDetails = async (selectedOption) => { // Accept selectedOption as an argument
-    console.log('Selected Payment Option:', selectedPaymentOption);
+
   
     if (selectedOption) {
-      let paymentTitle = 'Reserva de turno';
+      let paymentTitle = 'Reserva de turno - Sesion individual';
       let paymentAmount = 4500;
   
-      if (selectedOption === 'option2') {
-        paymentTitle = 'Reserva de turno - Opción 2';
+      if (selectedOption === 'Grupal') {
+        paymentTitle = 'Reserva de turno - Sesion grupal';
         paymentAmount = 10000;
       }
   
@@ -198,9 +200,9 @@ const Usuarios = () => {
       try {
         const response = await axios.post('http://localhost:3000/mercadopago/create_preference', preferenceData);
         const preferenceId = response.data.id;
-   
+      
           window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
-  
+       
       } catch (error) {
         console.error('Error al crear la preferencia de MercadoPago:', error);
       }
@@ -233,7 +235,7 @@ const Usuarios = () => {
     const eventDataFromLocalStorage = localStorage.getItem('eventData');
     const selectedEvent = eventDataFromLocalStorage ? JSON.parse(eventDataFromLocalStorage) : null;
 
-    console.log(selectedEvent)
+
     if (selectedEvent) {
       try {
         await axios.delete(`http://localhost:3000/turnos/borrar/${selectedEvent.eventId}`);

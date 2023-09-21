@@ -14,6 +14,7 @@ export class TurnoController {
 
   @Post('reservar')
   async reservar(@Body() eventData: Turno): Promise<Turno> {
+    console.log(eventData);
     return this.turnoService.reservar(eventData);
   }
 

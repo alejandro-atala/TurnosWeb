@@ -25,5 +25,9 @@ export class Turno {
 
   @Column()
   eventId: number ;
+
+  @Column()
+  paymentType: string ;
+
  
 }
