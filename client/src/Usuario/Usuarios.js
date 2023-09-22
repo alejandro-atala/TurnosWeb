@@ -175,7 +175,7 @@ const Usuarios = () => {
       overlay.style.left = '0';
       overlay.style.width = '100%';
       overlay.style.height = '100%';
-      overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
 
       const formContainer = document.createElement('div');
       formContainer.style.position = 'absolute';
@@ -185,8 +185,9 @@ const Usuarios = () => {
       formContainer.style.backgroundColor = 'rgba(78, 202, 155,1)';
       formContainer.style.padding = '20px';
       formContainer.style.zIndex = '1000';
-      formContainer.style.width = '50%';
+      formContainer.style.width = '20%';
       formContainer.style.textAlign = 'center';
+      formContainer.style.borderRadius = '10px';
 
       formContainer.innerHTML = `
       <h2>Ingrese sus datos</h2>
