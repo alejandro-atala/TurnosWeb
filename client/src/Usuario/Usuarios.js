@@ -388,6 +388,7 @@ const Usuarios = () => {
         endAccessor="end"
         style={{ height: 600 }}
         selectable
+        onSelectEvent={handleSelect}
         onSelectSlot={handleSelect}
         timeslots={1}
         step={60}
