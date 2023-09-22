@@ -68,7 +68,7 @@ const Usuarios = () => {
       });
 
       if (isCellOccupied) {
-        alert('Esta franja horaria ya está ocupada. Por favor, elige otro horario.');
+        alert('Este horario ya está ocupado. Por favor, elige otro.');
         return;
       }
       const formData = await showReservationForm();
@@ -187,7 +187,7 @@ const Usuarios = () => {
       formContainer.style.zIndex = '1000';
       formContainer.style.width = '20%';
       formContainer.style.textAlign = 'center';
-      formContainer.style.borderRadius = '10px';
+formContainer.style.borderRadius = '10px';
 
       formContainer.innerHTML = `
       <h2>Ingrese sus datos</h2>
@@ -318,7 +318,9 @@ const Usuarios = () => {
         id: event.id,
         start: new Date(event.start),
         end: new Date(event.end),
-        title: 'Ocupado',
+        title: event.paymentType, 
+
+  
       }));
       setEvents(formattedEvents);
     } catch (error) {
