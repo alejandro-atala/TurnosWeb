@@ -86,9 +86,9 @@ const Usuarios = () => {
         formattedEnd,
         paymentType: formData.paymentOption,
       };
-      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno el día ${formattedStart} hs`);
+      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
 
-      updatePaymentDetails(formData.paymentOption);
+      updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -119,8 +119,8 @@ const Usuarios = () => {
         paymentType: formData.paymentOption,
       };
 
-      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno el día ${formattedStart} hs`);
-      updatePaymentDetails(formData.paymentOption);
+      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
+      updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -151,8 +151,8 @@ const Usuarios = () => {
         paymentType: formData.paymentOption,
       };
 
-      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno el día ${formattedStart} hs `);
-      updatePaymentDetails(formData.paymentOption);
+      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
+      updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -272,18 +272,20 @@ formContainer.style.borderRadius = '10px';
 
 
   // Update payment details based on the selected option
-  const updatePaymentDetails = async (selectedOption) => { // Accept selectedOption as an argument
+  const updatePaymentDetails = async (selectedOption,formattedStart) => { // Accept selectedOption as an argument
 
 
     if (selectedOption) {
-      let paymentTitle = 'Reserva de turno - Sesion individual';
+      let paymentTitle = `Reserva de turno - Sesion individual - ${formattedStart} hs`;
       let paymentAmount = 4500;
 
       if (selectedOption === 'Grupal') {
-        paymentTitle = 'Reserva de turno - Sesion grupal';
+        paymentTitle = `Reserva de turno - Sesion grupal - ${formattedStart} hs`;
         paymentAmount = 10000;
       }
 
+
+      
       const preferenceData = {
         items: [
           {
