@@ -47,6 +47,11 @@ const Usuarios = () => {
 
 
   const handleSelect = async ({ start, end }) => {
+
+    const formattedStart = moment(start).locale('es').format('LL LT');  // Formatea la fecha de inicio en español
+  const formattedEnd = moment(end).locale('es').format('LL LT');      // Formatea la fecha de fin en español
+
+    
     const isCellOccupied = events.some(event => {
       return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
     });
@@ -77,11 +82,11 @@ const Usuarios = () => {
       const eventData = {
         eventId,
         ...formData,
-        start,
-        end,
+        formattedStart,
+        formattedEnd,
         paymentType: formData.paymentOption,
       };
-
+      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno el día ${formattedStart} hs`);
 
       updatePaymentDetails(formData.paymentOption);
 
@@ -94,6 +99,8 @@ const Usuarios = () => {
           id: response.data.id,
         };
         setEvents([...events, newEvent]);
+
+        
 
       } catch (error) {
         console.error('Error al reservar turno:', error);
@@ -112,10 +119,11 @@ const Usuarios = () => {
         paymentType: formData.paymentOption,
       };
 
-
+      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno el día ${formattedStart} hs`);
       updatePaymentDetails(formData.paymentOption);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
+
 
       try {
         const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
@@ -143,10 +151,11 @@ const Usuarios = () => {
         paymentType: formData.paymentOption,
       };
 
-
+      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno el día ${formattedStart} hs `);
       updatePaymentDetails(formData.paymentOption);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
+
 
       try {
         const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
@@ -227,7 +236,7 @@ formContainer.style.borderRadius = '10px';
           telefono: form.querySelector('#telefono').value,
           paymentOption: form.querySelector('#paymentOption').value,
         };
-
+       
         // Update the state with the selected payment option
         setSelectedPaymentOption(formData.paymentOption);
 
@@ -379,6 +388,42 @@ formContainer.style.borderRadius = '10px';
     };
   };
   
+
+
+
+  // const handleFormSubmit = async (formData) => {
+   
+  
+ 
+  
+  //   try {
+  //     const response = await axios.post('http://localhost:3000/messages/send', formData);
+  //     console.log('Solicitud POST exitosa:', response.data);
+  //     // Realiza las acciones que necesites después de enviar los datos
+  //   } catch (error) {
+  //     console.error('Error al enviar la solicitud POST:', error);
+  //   }
+  // };
+  const handleFormSubmit = async (email,hora,dia) => {
+   
+  console.log(email,hora,dia);
+    try {
+      // Envia los datos en la solicitud POST
+      const response = await axios.post('http://localhost:3000/messages/send', {
+        email: email,
+        hora: hora,
+        dia: dia
+      });
+  
+      console.log('Solicitud POST exitosa:', response.data);
+      // Realiza las acciones que necesites después de enviar los datos
+    } catch (error) {
+      console.error('Error al enviar la solicitud POST:', error);
+    }
+  };
+  
+  
+
 
 
   return (

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TurnoModule } from './turnos/turnos.module';
 import { MercadoPagoModule } from './mercado-pago/mercado-pago.module';
+import { TwilioModule } from './twilio/twilio.module';
 
 @Module({
   imports: [
@@ -21,6 +22,8 @@ import { MercadoPagoModule } from './mercado-pago/mercado-pago.module';
     }),
     TurnoModule,
     MercadoPagoModule,
+    TwilioModule,
+    TwilioModule,
   ],
   controllers: [AppController],
   providers: [AppService],
