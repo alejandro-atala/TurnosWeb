@@ -4,12 +4,13 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import '@fortawesome/fontawesome-free/css/all.css'; // Importa los estilos CSS de FontAwesome
-
+import EventCard from './Evento';
 
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = () => {
   const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const handleSelect = async ({ start, end }) => {
     const title = prompt('Ingrese su nombre:');
@@ -77,6 +78,15 @@ const MyCalendar = () => {
     getEvents();
   }, []);
 
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+  };
+
+  const closeEventCard = () => {
+    setSelectedEvent(null);
+  };
+
   return (
     <div>
       <Calendar
@@ -87,12 +97,21 @@ const MyCalendar = () => {
         style={{ height: 600 }}
         selectable
         onSelectSlot={handleSelect}
+        onSelectEvent={handleEventClick}
         timeslots={1} step={60}
         defaultView={'work_week'}
         min={new Date(0, 0, 0, 8, 0, 0)}  // Hora mínima: 8:00 AM
         max={new Date(0, 0, 0, 18, 0, 0)}  // Hora máxima: 6:00 PM
         views={['day', 'work_week']}
       />
+
+{selectedEvent && (
+        <div className="event-card-overlay" onClick={closeEventCard}>
+          <EventCard event={selectedEvent} onClose={closeEventCard} />
+        </div>
+      )}
+
+
     </div>
   );
 };
