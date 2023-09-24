@@ -1,5 +1,23 @@
-/* .calendario-container {
-  transform: scale(0.8); 
-} */
+
+
+
+/* Update this CSS to target the form elements correctly */
+.container {
+  background-color: darkgray;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+
+/* Optional: Style the labels and inputs */
+.container span {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
 

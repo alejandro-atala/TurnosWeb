@@ -5,6 +5,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import '@fortawesome/fontawesome-free/css/all.css'; // Importa los estilos CSS de FontAwesome
 import EventCard from './Evento';
+import './calendario.css'
+
 
 const localizer = momentLocalizer(moment);
 
@@ -41,27 +43,27 @@ const MyCalendar = () => {
 
 
 
-  const handleSelect = async ({ start, end }) => {
-    const title = prompt('Ingrese su nombre:');
-    if (title) {
-      const eventData = {
-        title,
-        start,
-        end,
-      };
-      try {
-        console.log(eventData);
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
-        const newEvent = {
-          ...eventData,
-          id: response.data.id,
-        };
-        setEvents([...events, newEvent]);
-      } catch (error) {
-        console.error('Error al reservar turno:', error);
-      }
-    }
-  };
+  // const handleSelect = async ({ start, end }) => {
+  //   const title = prompt('Ingrese su nombre:');
+  //   if (title) {
+  //     const eventData = {
+  //       title,
+  //       start,
+  //       end,
+  //     };
+  //     try {
+  //       console.log(eventData);
+  //       const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+  //       const newEvent = {
+  //         ...eventData,
+  //         id: response.data.id,
+  //       };
+  //       setEvents([...events, newEvent]);
+  //     } catch (error) {
+  //       console.error('Error al reservar turno:', error);
+  //     }
+  //   }
+  // };
 
   const handleDeleteEvent = async (eventId) => {
     try {
@@ -162,7 +164,7 @@ const MyCalendar = () => {
         endAccessor="end"
         style={{ height: 600 }}
         selectable
-        onSelectSlot={handleSelect}
+        // onSelectSlot={handleSelect}
         onSelectEvent={handleEventClick}
         timeslots={1} step={60}
         defaultView={'work_week'}
@@ -176,25 +178,52 @@ const MyCalendar = () => {
           <EventCard event={selectedEvent} onClose={closeEventCard} />
         </div>
       )}
+<div  className="container">
+<div className="container d-flex flex-column justify-content-center align-items-center ">
+  <div className="row">
+    <div className="col">
+      <h6>Aquí podrá actualizar los valores de las sesiones</h6>
+    </div>
+  </div>
 
-<input
+  <div className="row">
+    <div className="col">
+      <span>Individual</span>
+      <input
         type="text"
+        className="form-control"
         placeholder="Sesión individual"
-        value={sessionIndividual || ''}  // Use a default value if sessionIndividual is null
+        value={sessionIndividual || ''}
         name="sessionIndividual"
         onChange={handleInputChange}
       />
+    </div>
+    <div className="col">
+      <span>Grupal</span>
       <input
         type="text"
+        className="form-control"
         placeholder="Sesión grupal"
-        value={sessionGroup || ''}  // Use a default value if sessionGroup is null
+        value={sessionGroup || ''}
         name="sessionGroup"
         onChange={handleInputChange}
       />
+    </div>
+  </div>
 
-      <button onClick={handleGuardarClick}>Guardar</button>
+  <div className="row">
+    <div className="col">
+      <button className="btn btn-primary m-3" onClick={handleGuardarClick}>
+        Guardar
+      </button>
+    </div>
+  </div>
+
+  </div>
 
 
+
+      </div>
     </div>
   );
 };
