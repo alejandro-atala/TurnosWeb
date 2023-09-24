@@ -188,7 +188,7 @@ const Usuarios = () => {
 
       const formContainer = document.createElement('div');
       formContainer.style.position = 'absolute';
-      formContainer.style.top = '30%';
+      formContainer.style.top = '50%';
       formContainer.style.left = '50%';
       formContainer.style.transform = 'translate(-50%, -50%)';
       formContainer.style.backgroundColor = 'rgba(78, 202, 155,1)';
