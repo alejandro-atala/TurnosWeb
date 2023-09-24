@@ -1,0 +1,13 @@
+/* MyCalendar.css */
+
+.custom-calendar {
+    background-color: #f0f0f0; /* Cambia el fondo del calendario según tus preferencias */
+  }
+  
+
+
+  .titulo{
+   background-color: rgb(43, 226, 171);
+    text-align: center;
+    padding-bottom: 10px;
+  }

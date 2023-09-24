@@ -11,6 +11,35 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [sessionIndividual, setSessionIndividual] = useState('');
+  const [sessionGroup, setSessionGroup] = useState('');
+
+
+
+  
+  useEffect(() => {
+    getEvents();
+  }, []);
+
+  useEffect(() => {
+    const getValues = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/valores');
+        const  sessionIndividual  = response.data[0].sessionIndividual;
+        const  sessionGroup  = response.data[0].sessionGroup;
+
+        // Set the fetched values as the initial state for the inputs
+        setSessionIndividual(sessionIndividual);
+        setSessionGroup(sessionGroup);
+      } catch (error) {
+        console.error('Error fetching values:', error);
+      }
+    };
+
+   getValues();
+  }, []);
+
+
 
   const handleSelect = async ({ start, end }) => {
     const title = prompt('Ingrese su nombre:');
@@ -73,10 +102,10 @@ const MyCalendar = () => {
     }
   };
 
+  // useEffect(() => {
+  //   getValues();
+  // }, []);
 
-  useEffect(() => {
-    getEvents();
-  }, []);
 
 
   const handleEventClick = (event) => {
@@ -86,6 +115,43 @@ const MyCalendar = () => {
   const closeEventCard = () => {
     setSelectedEvent(null);
   };
+
+  // const getValues = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:3000/valores');
+  //     const { sessionIndividual, sessionGroup } = response.data;
+
+  //     setSessionIndividual(sessionIndividual);
+  //     setSessionGroup(sessionGroup);
+  //   } catch (error) {
+  //     console.error('Error fetching values:', error);
+  //   }
+  // };
+
+
+  const handleGuardarClick = async () => {
+    const eventData = {
+      sessionIndividual,
+      sessionGroup,
+    };
+
+    try {
+      await axios.put('http://localhost:3000/valores', eventData);
+      console.log('Valores actualizados');
+    } catch (error) {
+      console.error('Error al actualizar valores:', error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'sessionIndividual') {
+      setSessionIndividual(value);
+    } else if (name === 'sessionGroup') {
+      setSessionGroup(value);
+    }
+  };
+
 
   return (
     <div>
@@ -110,6 +176,23 @@ const MyCalendar = () => {
           <EventCard event={selectedEvent} onClose={closeEventCard} />
         </div>
       )}
+
+<input
+        type="text"
+        placeholder="Sesión individual"
+        value={sessionIndividual || ''}  // Use a default value if sessionIndividual is null
+        name="sessionIndividual"
+        onChange={handleInputChange}
+      />
+      <input
+        type="text"
+        placeholder="Sesión grupal"
+        value={sessionGroup || ''}  // Use a default value if sessionGroup is null
+        name="sessionGroup"
+        onChange={handleInputChange}
+      />
+
+      <button onClick={handleGuardarClick}>Guardar</button>
 
 
     </div>
