@@ -17,7 +17,26 @@ const MyCalendar = () => {
   const [sessionGroup, setSessionGroup] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
-
+  const initializeDatabase = async () => { 
+    try {
+      console.log('Initializing database')
+      const response = await axios.get('http://localhost:3000/valores');
+      const valores = response.data;
+  
+      // Check if default values are already present
+      if (!valores || valores.length === 0) {
+        // Insert default values
+        await axios.post('http://localhost:3000/valores', {
+          id: 1,
+          sessionIndividual: '0',
+          sessionGroup: '0'
+        });
+      }
+    } catch (error) {
+      console.error('Error initializing database:', error);  
+    }
+  };
+  
   
   
   useEffect(() => {
@@ -163,26 +182,7 @@ const MyCalendar = () => {
   };
 
 
-  const initializeDatabase = async () => { 
-    try {
-      console.log('Initializing database')
-      const response = await axios.get('http://localhost:3000/valores');
-      const valores = response.data;
-  
-      // Check if default values are already present
-      if (!valores || valores.length === 0) {
-        // Insert default values
-        await axios.post('http://localhost:3000/valores', {
-          id: 1,
-          sessionIndividual: '0',
-          sessionGroup: '0'
-        });
-      }
-    } catch (error) {
-      console.error('Error initializing database:', error);
-    }
-  };
-  
+
   // Call the initialization function when your application starts
 
 

@@ -31,7 +31,8 @@ export class ValoresController {
 
   @Post()
   async createDefaultValues() {
+    console.log("post")
     return this.valorService.createDefaultValues();
-  }
+  } 
 }
 
