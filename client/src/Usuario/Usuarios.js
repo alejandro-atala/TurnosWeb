@@ -272,28 +272,35 @@ formContainer.style.borderRadius = '10px';
 
 
   // Update payment details based on the selected option
-  const updatePaymentDetails = async (selectedOption,formattedStart) => { // Accept selectedOption as an argument
-
-
+  const updatePaymentDetails = async (selectedOption, formattedStart) => {
     if (selectedOption) {
-      let paymentTitle = `Reserva de turno - Sesion individual - ${formattedStart} hs`;
-      let paymentAmount = 4500;
+      console.log("gola")
+      // Fetch "valores" from the server
+      try {
+        const response = await axios.get('http://localhost:3000/valores');
+        const valores = response.data;
 
-      if (selectedOption === 'Grupal') {
-        paymentTitle = `Reserva de turno - Sesion grupal - ${formattedStart} hs`;
-        paymentAmount = 10000;
-      }
+        // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
+        const sessionIndividual = valores[0].sessionIndividual;
+        const sessionGroup = valores[0].sessionGroup;
 
+        // Use sessionIndividual and sessionGroup in your updatePaymentDetails function
+        let paymentTitle = `Reserva de turno - Sesion individual - ${formattedStart} hs`;
+        let paymentAmount = parseFloat(sessionIndividual);
 
-      
-      const preferenceData = {
-        items: [
-          {
-            title: paymentTitle,
-            unit_price: paymentAmount,
-            quantity: 1,
-          },
-        ],
+        if (selectedOption === 'Grupal') {
+          paymentTitle = `Reserva de turno - Sesion grupal - ${formattedStart} hs`;
+          paymentAmount = parseFloat(sessionGroup);
+        }
+
+        const preferenceData = {
+          items: [
+            {
+              title: paymentTitle,
+              unit_price: paymentAmount,
+              quantity: 1,
+            },
+          ],
         back_urls: {
           success: 'http://localhost:3001/usuarios',
           failure: 'http://localhost:3001/usuarios?payment_failure=true',
@@ -312,6 +319,9 @@ formContainer.style.borderRadius = '10px';
       } catch (error) {
         console.error('Error al crear la preferencia de MercadoPago:', error);
       }
+    } catch (error) {
+      console.error('Error fetching valores:', error);
+    }
     } else {
       console.error('No payment option selected.');
     }

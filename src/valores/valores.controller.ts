@@ -20,6 +20,7 @@ export class ValoresController {
   @Put()
   async updateValues(@Body() body: Valores, id:number): Promise<Valores> {
     try {
+
       const updatedValor = await this.valorService.updateValues(body,id);
       return updatedValor;
     } catch (error) {

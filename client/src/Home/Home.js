@@ -7,8 +7,8 @@ import InicioSesion from '../Login/Login';
 
 const Home = () => {
     return (
-        <div className="home-container">
-            <div className="card">
+        <div className="home-container ">
+    <div className="card" style={{ maxWidth: '400px', width: '100%' }}>
                 <h1>Micaela Gonzalez</h1>
                 <h3>Psicologa</h3>
                 <div className="profile-image">

@@ -15,6 +15,7 @@ const MyCalendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [sessionIndividual, setSessionIndividual] = useState('');
   const [sessionGroup, setSessionGroup] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
 
 
 
@@ -140,6 +141,12 @@ const MyCalendar = () => {
     try {
       await axios.put('http://localhost:3000/valores', eventData);
       console.log('Valores actualizados');
+      setShowAlert(true);  // Show the alert
+
+      // Hide the alert after 2 seconds
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 2000);
     } catch (error) {
       console.error('Error al actualizar valores:', error);
     }
@@ -217,8 +224,14 @@ const MyCalendar = () => {
         Guardar
       </button>
     </div>
-  </div>
+ 
 
+  </div>
+  {showAlert && (
+  <div className="alert alert-success d-flex justify-content-center align-items-center" role="alert">
+    Valores actualizados
+  </div>
+)}
   </div>
 
 
