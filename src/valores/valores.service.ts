@@ -16,7 +16,7 @@ export class ValoresService {
   }
 
   async updateValues(valor: Valores, id :number): Promise<Valores> {
-    try {
+    try {    
       const existingValor = await this.valorRepository.findOne({where:{id}}); // Assuming there's only one record
 
       // Update the existingValor with the new values

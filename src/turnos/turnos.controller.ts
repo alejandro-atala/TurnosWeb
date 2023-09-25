@@ -9,6 +9,7 @@ export class TurnoController {
 
   @Get()
   async findAll(): Promise<Turno[]> {
+
     return this.turnoService.findAll();
   }
 
