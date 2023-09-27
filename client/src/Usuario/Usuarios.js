@@ -457,8 +457,12 @@ formContainer.style.borderRadius = '10px';
         max={new Date(0, 0, 0, 18, 0, 0)}
         views={['day', 'work_week']}
         eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
-      />
+      /><br></br>
+     <footer className="fixed-bottom bg-light text-center">
+      <p className="m-0">Diseñado por Alejandro Atala - 2921-401356</p>
+    </footer>
     </div>
+  
   );
 };
 
