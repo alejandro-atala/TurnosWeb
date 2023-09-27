@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from '../src/Home/Home';
+import Usuarios from '../src/Usuario/Usuarios';
 import Calendario from '../src/Calendario/Calendario';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Home from '../src/Home/Home'
+
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -89,6 +91,8 @@ const App = () => {
             )
           }
         />
+           <Route path="/" element={<Home />} />
+        <Route path="/usuarios" element={<Usuarios />} />
       </Routes>
     </BrowserRouter>
   );
