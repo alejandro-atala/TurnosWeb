@@ -27,12 +27,27 @@ const Usuarios = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null); // Initialize with a default value
-
+  const [alertMessage, setAlertMessage] = useState(null); // State for alert message
+  const [alertType, setAlertType] = useState('success'); // State for alert type
 
   const handleDOMContentLoaded = () => {
     // Call your function here that requires the DOM to be loaded
 
   };
+
+  const clearAlert = () => {
+    setAlertMessage(null);
+    setAlertType('success');
+  };
+
+  const showAlert = (message, type) => {
+    setAlertMessage(message);
+    setAlertType(type);
+
+    // Clear the alert after 2 seconds
+    setTimeout(clearAlert, 2000);
+  };
+
 
   useEffect(() => {
     // Listen for the DOMContentLoaded event
@@ -73,7 +88,7 @@ const Usuarios = () => {
       });
 
       if (isCellOccupied) {
-        alert('Este horario ya está ocupado. Por favor, elige otro.');
+        showAlert('Este horario ya está ocupado. Por favor, elige otro.', 'danger');
         return;
       }
       const formData = await showReservationForm();
@@ -440,6 +455,15 @@ formContainer.style.borderRadius = '10px';
 
   return (
     <div>
+     
+     <div  className=' mx-auto text-center col-3 '>
+    {/* Render the alert conditionally */}
+    {alertMessage && (
+        <div className={`alert alert-${alertType}`} role="alert">
+          {alertMessage}
+        </div>
+      )}
+       </div>
       <Calendar
        messages={messages}
         localizer={localizer}
