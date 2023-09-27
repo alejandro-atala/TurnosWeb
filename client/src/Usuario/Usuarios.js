@@ -5,6 +5,9 @@ import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const localizer = momentLocalizer(moment);
 
@@ -35,17 +38,14 @@ const Usuarios = () => {
 
   };
 
-  const clearAlert = () => {
-    setAlertMessage(null);
-    setAlertType('success');
-  };
+
 
   const showAlert = (message, type) => {
-    setAlertMessage(message);
-    setAlertType(type);
-
-    // Clear the alert after 2 seconds
-    setTimeout(clearAlert, 2000);
+    if (type === 'success') {
+      toast.success(message);
+    } else if (type === 'danger') {
+      toast.error(message);
+    }
   };
 
 
@@ -457,13 +457,10 @@ formContainer.style.borderRadius = '10px';
     <div>
      
      <div  className=' mx-auto text-center col-3 '>
-    {/* Render the alert conditionally */}
-    {alertMessage && (
-        <div className={`alert alert-${alertType}`} role="alert">
-          {alertMessage}
-        </div>
-      )}
-       </div>
+     <ToastContainer position="top-center" autoClose={3000} />
+      <div className='mx-auto text-center col-3'>
+      
+       </div>       </div>
       <Calendar
        messages={messages}
         localizer={localizer}

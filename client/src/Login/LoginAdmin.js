@@ -1,10 +1,11 @@
-// LoginForm.js
-
 import React, { useState } from 'react';
+
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -19,10 +20,9 @@ const LoginForm = () => {
 
     // Verificar si el usuario y la contraseña son "admin"
     if (username === 'admin' && password === 'admin') {
-      console.log('Inicio de sesión exitoso para el usuario:', username);
-      
+        // showAlert('Inicio de sesión exitoso para el usuario: ' + username);
     } else {
-      console.log('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
+        // showAlert('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
     }
   };
 
@@ -50,6 +50,7 @@ const LoginForm = () => {
         </div>
         <button type="submit">Iniciar sesión</button>
       </form>
+      {/* <ToastContainer position="top-center" autoClose={3000} /> */}
     </div>
   );
 };

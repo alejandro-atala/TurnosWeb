@@ -4,14 +4,25 @@ import Usuarios from '../src/Usuario/Usuarios';
 import Calendario from '../src/Calendario/Calendario';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from '../src/Home/Home'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
+
+
+
+    const showAlert = (message, type) => {
+    if (type === 'success') {
+      toast.success(message);
+    } else if (type === 'danger') {
+      toast.error(message);
+    }
+  };
+
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -25,15 +36,11 @@ const App = () => {
     // Simulación de autenticación exitosa
     if (username === 'micaela' && password === '26Diciembre86') {
       setIsLoggedIn(true);
-      setShowAlert(false); // Oculta el alert si estaba visible
+      toast.success('Inicio de sesión exitoso para el usuario: ' + username);
     } else {
-      setError('Credenciales incorrectas. Inténtalo de nuevo.');
-      setShowAlert(true);
-      // Oculta el alert después de 2 segundos
-      setTimeout(() => {
-        setShowAlert(false);
-        setError('');
-      }, 2000);
+    
+      toast.error('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
+      
     }
   };
 
@@ -47,11 +54,7 @@ const App = () => {
               <Calendario />
             ) : (
               <div className="container col-3 bg-info  mt-5 rounded-4">
-                {showAlert && (
-                  <div className="alert alert-danger" role="alert">
-                    {error}
-                  </div>
-                )}
+                
                 <h2 className="mb-4">Login</h2>
                 <form
                   onSubmit={(e) => {
@@ -87,12 +90,14 @@ const App = () => {
                     Iniciar sesión
                   </button>
                 </form>
+                <ToastContainer position="top-center" autoClose={3000} />
               </div>
             )
           }
         />
            <Route path="/" element={<Home />} />
         <Route path="/usuarios" element={<Usuarios />} />
+
       </Routes>
     </BrowserRouter>
   );
