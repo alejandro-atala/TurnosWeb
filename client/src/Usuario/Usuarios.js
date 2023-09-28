@@ -480,7 +480,7 @@ formContainer.style.borderRadius = '10px';
         eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
       /><br></br>
      <footer className="fixed-bottom bg-light text-center">
-      <p className="m-0">Diseñado por Alejandro Atala - 2921-401356</p>
+      <p className="m-0">Diseñado por Alejandro  - 2921-401356</p>
     </footer>
     </div>
   

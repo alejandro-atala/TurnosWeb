@@ -76,6 +76,7 @@ const MyCalendar = ({ username }) => {
     try {
       await axios.delete(`http://localhost:3000/turnos/${eventId}`);
       setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
+      toast.success('Turno eliminado exitosamente');
     } catch (error) {
       console.error('Error al eliminar turno:', error);
     }
