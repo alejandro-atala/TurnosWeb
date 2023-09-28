@@ -11,20 +11,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = () => {
+const MyCalendar = ({ username }) => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [sessionIndividual, setSessionIndividual] = useState('');
   const [sessionGroup, setSessionGroup] = useState('');
 
 
-  const showAlert = (message, type) => {
-    if (type === 'success') {
-      toast.success(message);
-    } else if (type === 'danger') {
-      toast.error(message);
-    }
-  };
+
 
 
   const initializeDatabase = async () => {
@@ -52,7 +46,9 @@ const MyCalendar = () => {
   useEffect(() => {
     initializeDatabase();
     getEvents();
-  }, []);
+    toast.info(`Buen día ${username}, que tengas un excelente día!`);
+  }, [username]);
+  
 
   useEffect(() => {
     const getValues = async () => {

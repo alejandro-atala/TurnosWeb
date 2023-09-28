@@ -26,7 +26,7 @@ const App = () => {
 
   const handleLogin = () => {
     // Simulación de autenticación exitosa
-    if (username === 'micaela' && password === '26Diciembre86') {
+    if (username === 'Micaela' && password === '26Diciembre86') {
       setIsLoggedIn(true);
       toast.success('Inicio de sesión exitoso para el usuario: ' + username);
     } else {
@@ -43,7 +43,7 @@ const App = () => {
           path="/admin"
           element={
             isLoggedIn ? (
-              <Calendario />
+              <Calendario username={username} />
             ) : (
               <div className="container col-3 bg-info  mt-5 rounded-4">
                 
