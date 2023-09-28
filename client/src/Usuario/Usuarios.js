@@ -66,7 +66,15 @@ const Usuarios = () => {
     const formattedStart = moment(start).locale('es').format('LL LT');  // Formatea la fecha de inicio en español
   const formattedEnd = moment(end).locale('es').format('LL LT');      // Formatea la fecha de fin en español
 
-    
+  const currentDate = moment().startOf('day');
+
+  // Verifica si la fecha seleccionada es anterior a la fecha actual
+  if (moment(start).isBefore(currentDate)) {
+    showAlert('No se pueden reservar turnos en días anteriores a la fecha actual.', 'danger');
+    return;
+  }
+
+  
     const isCellOccupied = events.some(event => {
       return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
     });
