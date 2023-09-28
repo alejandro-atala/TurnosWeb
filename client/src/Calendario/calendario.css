@@ -3,13 +3,14 @@
 
 /* Update this CSS to target the form elements correctly */
 .container {
-  background-color: darkgray;
+  background-color: rgb(143, 159, 249);
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 0 auto;
+  border-radius: 10px;
 }
 
 

@@ -185,11 +185,11 @@ const MyCalendar = ({ username }) => {
         </div>
       )}
 
-      <div className="container">
+<div className="container" style={{ maxWidth: '400px', margin: '0 auto' }}>
         <div className="container d-flex flex-column justify-content-center align-items-center ">
           <div className="row">
             <div className="col">
-              <h6>Aquí podrá actualizar los valores de las sesiones</h6>
+              <h6>Actualizar los valores de las sesiones</h6>
             </div>
           </div>
 
