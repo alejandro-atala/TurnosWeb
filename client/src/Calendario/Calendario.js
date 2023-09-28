@@ -6,7 +6,8 @@ import axios from 'axios';
 import '@fortawesome/fontawesome-free/css/all.css'; // Importa los estilos CSS de FontAwesome
 import EventCard from './Evento';
 import './calendario.css'
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const localizer = momentLocalizer(moment);
 
@@ -15,14 +16,23 @@ const MyCalendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [sessionIndividual, setSessionIndividual] = useState('');
   const [sessionGroup, setSessionGroup] = useState('');
-  const [showAlert, setShowAlert] = useState(false);
 
-  const initializeDatabase = async () => { 
+
+  const showAlert = (message, type) => {
+    if (type === 'success') {
+      toast.success(message);
+    } else if (type === 'danger') {
+      toast.error(message);
+    }
+  };
+
+
+  const initializeDatabase = async () => {
     try {
       console.log('Initializing database')
       const response = await axios.get('http://localhost:3000/valores');
       const valores = response.data;
-  
+
       // Check if default values are already present
       if (!valores || valores.length === 0) {
         // Insert default values
@@ -33,14 +43,14 @@ const MyCalendar = () => {
         });
       }
     } catch (error) {
-      console.error('Error initializing database:', error);  
+      console.error('Error initializing database:', error);
     }
   };
-  
-  
-  
+
+
+
   useEffect(() => {
-    initializeDatabase(); 
+    initializeDatabase();
     getEvents();
   }, []);
 
@@ -48,8 +58,8 @@ const MyCalendar = () => {
     const getValues = async () => {
       try {
         const response = await axios.get('http://localhost:3000/valores');
-        const  sessionIndividual  = response.data[0].sessionIndividual;
-        const  sessionGroup  = response.data[0].sessionGroup;
+        const sessionIndividual = response.data[0].sessionIndividual;
+        const sessionGroup = response.data[0].sessionGroup;
 
         // Set the fetched values as the initial state for the inputs
         setSessionIndividual(sessionIndividual);
@@ -59,32 +69,12 @@ const MyCalendar = () => {
       }
     };
 
-   getValues();
+    getValues();
   }, []);
 
 
 
-  // const handleSelect = async ({ start, end }) => {
-  //   const title = prompt('Ingrese su nombre:');
-  //   if (title) {
-  //     const eventData = {
-  //       title,
-  //       start,
-  //       end,
-  //     };
-  //     try {
-  //       console.log(eventData);
-  //       const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
-  //       const newEvent = {
-  //         ...eventData,
-  //         id: response.data.id,
-  //       };
-  //       setEvents([...events, newEvent]);
-  //     } catch (error) {
-  //       console.error('Error al reservar turno:', error);
-  //     }
-  //   }
-  // };
+
 
   const handleDeleteEvent = async (eventId) => {
     try {
@@ -125,9 +115,7 @@ const MyCalendar = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getValues();
-  // }, []);
+
 
 
 
@@ -135,21 +123,7 @@ const MyCalendar = () => {
     setSelectedEvent(event);
   };
 
-  const closeEventCard = () => {
-    setSelectedEvent(null);
-  };
 
-  // const getValues = async () => {
-  //   try {
-  //     const response = await axios.get('http://localhost:3000/valores');
-  //     const { sessionIndividual, sessionGroup } = response.data;
-
-  //     setSessionIndividual(sessionIndividual);
-  //     setSessionGroup(sessionGroup);
-  //   } catch (error) {
-  //     console.error('Error fetching values:', error);
-  //   }
-  // };
 
 
   const handleGuardarClick = async () => {
@@ -161,14 +135,12 @@ const MyCalendar = () => {
     try {
       await axios.put('http://localhost:3000/valores', eventData);
       console.log('Valores actualizados');
-      setShowAlert(true);  // Show the alert
+      toast.success('Valores actualizados');
 
-      // Hide the alert after 2 seconds
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 2000);
+
     } catch (error) {
       console.error('Error al actualizar valores:', error);
+      toast.error('Error al actualizar valores');
     }
   };
 
@@ -186,7 +158,7 @@ const MyCalendar = () => {
   // Call the initialization function when your application starts
 
 
-  
+
 
 
   return (
@@ -207,61 +179,53 @@ const MyCalendar = () => {
         views={['day', 'work_week']}
       />
 
-{selectedEvent && (
-        <div className="event-card-overlay" onClick={closeEventCard}>
-          <EventCard event={selectedEvent} onClose={closeEventCard} />
+
+      <div className="container">
+        <div className="container d-flex flex-column justify-content-center align-items-center ">
+          <div className="row">
+            <div className="col">
+              <h6>Aquí podrá actualizar los valores de las sesiones</h6>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col">
+              <span>Individual</span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Sesión individual"
+                value={sessionIndividual || ''}
+                name="sessionIndividual"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="col">
+              <span>Grupal</span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Sesión grupal"
+                value={sessionGroup || ''}
+                name="sessionGroup"
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col">
+              <button className="btn btn-primary m-3" onClick={handleGuardarClick}>
+                Guardar
+              </button>
+            </div>
+
+
+          </div>
+
         </div>
-      )}
-<div  className="container">
-<div className="container d-flex flex-column justify-content-center align-items-center ">
-  <div className="row">
-    <div className="col">
-      <h6>Aquí podrá actualizar los valores de las sesiones</h6>
-    </div>
-  </div>
 
-  <div className="row">
-    <div className="col">
-      <span>Individual</span>
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Sesión individual"
-        value={sessionIndividual || ''}
-        name="sessionIndividual"
-        onChange={handleInputChange}
-      />
-    </div>
-    <div className="col">
-      <span>Grupal</span>
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Sesión grupal"
-        value={sessionGroup || ''}
-        name="sessionGroup"
-        onChange={handleInputChange}
-      />
-    </div>
-  </div>
-
-  <div className="row">
-    <div className="col">
-      <button className="btn btn-primary m-3" onClick={handleGuardarClick}>
-        Guardar
-      </button>
-    </div>
- 
-
-  </div>
-  {showAlert && (
-  <div className="alert alert-success d-flex justify-content-center align-items-center" role="alert">
-    Valores actualizados
-  </div>
-)}
-  </div>
-
-
+        <ToastContainer position="bottom-right" autoClose={3000} />
 
       </div>
     </div>
