@@ -11,17 +11,9 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
 
 
 
-    const showAlert = (message, type) => {
-    if (type === 'success') {
-      toast.success(message);
-    } else if (type === 'danger') {
-      toast.error(message);
-    }
-  };
 
 
   const handleUsernameChange = (event) => {
