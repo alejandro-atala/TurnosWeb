@@ -28,4 +28,14 @@ export class ValoresService {
       throw new Error('Error updating values');
     }
   }
+
+  async createDefaultValues(): Promise<Valores> {
+    const defaultValues = this.valorRepository.create({
+      id: 1,
+      sessionIndividual: '0',
+      sessionGroup: '0',
+    });
+    return this.valorRepository.save(defaultValues);
+  }
+
 }

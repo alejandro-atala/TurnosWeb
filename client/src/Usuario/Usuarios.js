@@ -5,6 +5,9 @@ import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const localizer = momentLocalizer(moment);
 
@@ -27,12 +30,24 @@ const Usuarios = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null); // Initialize with a default value
-
+  const [alertMessage, setAlertMessage] = useState(null); // State for alert message
+  const [alertType, setAlertType] = useState('success'); // State for alert type
 
   const handleDOMContentLoaded = () => {
     // Call your function here that requires the DOM to be loaded
 
   };
+
+
+
+  const showAlert = (message, type) => {
+    if (type === 'success') {
+      toast.success(message);
+    } else if (type === 'danger') {
+      toast.error(message);
+    }
+  };
+
 
   useEffect(() => {
     // Listen for the DOMContentLoaded event
@@ -73,7 +88,7 @@ const Usuarios = () => {
       });
 
       if (isCellOccupied) {
-        alert('Este horario ya está ocupado. Por favor, elige otro.');
+        showAlert('Este horario ya está ocupado. Por favor, elige otro.', 'danger');
         return;
       }
       const formData = await showReservationForm();
@@ -440,6 +455,12 @@ formContainer.style.borderRadius = '10px';
 
   return (
     <div>
+     
+     <div  className=' mx-auto text-center col-3 '>
+     <ToastContainer position="top-center" autoClose={3000} />
+      <div className='mx-auto text-center col-3'>
+      
+       </div>       </div>
       <Calendar
        messages={messages}
         localizer={localizer}
@@ -457,8 +478,12 @@ formContainer.style.borderRadius = '10px';
         max={new Date(0, 0, 0, 18, 0, 0)}
         views={['day', 'work_week']}
         eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
-      />
+      /><br></br>
+     <footer className="fixed-bottom bg-light text-center">
+      <p className="m-0">Diseñado por Alejandro Atala - 2921-401356</p>
+    </footer>
     </div>
+  
   );
 };
 

@@ -1,5 +1,5 @@
 // src/valores/valor.controller.ts
-import { Controller, Put, Get, Body, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Put, Get, Body, HttpStatus, HttpException, Post } from '@nestjs/common';
 import { ValoresService } from './valores.service';
 import { Valores } from './entities/valore.entity';
 
@@ -27,5 +27,12 @@ export class ValoresController {
       throw new HttpException('Error updating values', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+
+  @Post()
+  async createDefaultValues() {
+    console.log("post")
+    return this.valorService.createDefaultValues();
+  } 
 }
 
