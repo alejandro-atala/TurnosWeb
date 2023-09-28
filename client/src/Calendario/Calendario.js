@@ -111,7 +111,9 @@ const MyCalendar = ({ username }) => {
     }
   };
 
-
+  const closeEventCard = () => {
+    setSelectedEvent(null);
+  };
 
 
 
@@ -175,6 +177,12 @@ const MyCalendar = ({ username }) => {
         views={['day', 'work_week']}
       />
 
+
+{selectedEvent && (
+        <div className="event-card-overlay" onClick={closeEventCard}>
+          <EventCard event={selectedEvent} onClose={closeEventCard} />
+        </div>
+      )}
 
       <div className="container">
         <div className="container d-flex flex-column justify-content-center align-items-center ">
