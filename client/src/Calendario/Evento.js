@@ -10,6 +10,7 @@ const EventCard = ({ event, onClose }) => {
           <p>Nombre: {event.nombre}</p>
           <p>Teléfono: {event.telefono}</p>
           <p>Tipo de Pago: {event.paymentType}</p>
+         
           <button onClick={onClose}>Cerrar</button>
         </div>
       </div>

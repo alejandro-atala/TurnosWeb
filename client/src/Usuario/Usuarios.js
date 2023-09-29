@@ -483,7 +483,7 @@ formContainer.style.borderRadius = '10px';
         step={60}
         defaultView={'work_week'}
         min={new Date(0, 0, 0, 8, 0, 0)}
-        max={new Date(0, 0, 0, 18, 0, 0)}
+        max={new Date(0, 0, 0, 20, 0, 0)}
         views={['day', 'work_week']}
         eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
       /><br></br>
