@@ -110,7 +110,7 @@ const Usuarios = () => {
         paymentType: formData.paymentOption,
       };
       handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-
+      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
       updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -143,6 +143,7 @@ const Usuarios = () => {
       };
 
       handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
+      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
       updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -175,6 +176,7 @@ const Usuarios = () => {
       };
 
       handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
+      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
       updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -458,7 +460,18 @@ formContainer.style.borderRadius = '10px';
   };
   
   
-
+  const sendWhatsAppMessage = async (phoneNumber, message) => {
+    try {
+      const response = await axios.post('http://localhost:3000/messages/sendWsp', {
+        phoneNumber,
+        message,
+      });
+  
+      console.log('WhatsApp message sent successfully:', response.data);
+    } catch (error) {
+      console.error('Error sending WhatsApp message:', error);
+    }
+  };
 
 
   return (

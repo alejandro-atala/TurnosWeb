@@ -1,7 +1,13 @@
 
 
 import * as nodemailer from 'nodemailer';
+import * as twilio from 'twilio';
 
+const accountSid = 'AC081b6004b196f8a73162c388c972f9b7';
+const authToken = '55c13411b88e04f6b80748b76d333f0e';
+const twilioPhoneNumber = '+18063047849';
+
+const client = twilio(accountSid, authToken);
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -39,5 +45,20 @@ export class TwilioService {
     };
 console.log(mailOptions);
     await transporter.sendMail(mailOptions);
+  }
+
+
+  async sendWhatsAppMessage(to: string, body: string): Promise<void> {
+    try {
+      await client.messages.create({
+        body,
+        from: twilioPhoneNumber,  // Replace with your Twilio WhatsApp number
+        to: `${to}`
+      });
+      console.log('WhatsApp message sent successfully');
+    } catch (error) {
+      console.error('Error sending WhatsApp message:', error);
+      throw new Error('Error sending WhatsApp message');
+    }
   }
 }
