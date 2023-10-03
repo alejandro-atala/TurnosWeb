@@ -169,7 +169,7 @@ const MyCalendar = ({ username }) => {
       formContainer.style.backgroundColor = 'rgba(78, 202, 155,1)';
       formContainer.style.padding = '20px';
       formContainer.style.zIndex = '1000';
-      formContainer.style.width = '20%';
+      formContainer.style.width = 'auto';
       formContainer.style.textAlign = 'center';
 formContainer.style.borderRadius = '10px';
 
