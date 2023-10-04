@@ -7,7 +7,7 @@ async function bootstrap() {
 
   // Configura el CORS para permitir solicitudes desde varios orígenes
   app.enableCors({
-    origin: ['http://localhost:3002', 'http://localhost:3001'],
+    origin: ['http://localhost','http://localhost:3002', 'http://localhost:3001'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
