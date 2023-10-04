@@ -11,11 +11,11 @@ import { ValoresModule } from './valores/valores.module';
   imports: [
     TypeOrmModule.forRoot({
       type: "mysql",
-      host: "localhost",
+      host: "bm0yetkr3k6vu9rarje4-mysql.services.clever-cloud.com",
       port: 3306,
-      username: "root",
-      password: "root",
-      database: "turnero",
+      username: "uncahqiymeja6uj2",
+      password: "gs32FqABxC2Rz7D39j4w",
+      database: "bm0yetkr3k6vu9rarje4",
       entities: [
         "dist/**/**.entity{.ts,.js}",
       ],
