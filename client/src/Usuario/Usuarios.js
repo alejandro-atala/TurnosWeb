@@ -116,7 +116,7 @@ const Usuarios = () => {
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
       try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+        const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -150,7 +150,7 @@ const Usuarios = () => {
 
 
       try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+        const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -183,7 +183,7 @@ const Usuarios = () => {
 
 
       try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+        const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -302,7 +302,7 @@ formContainer.style.borderRadius = '10px';
       console.log("gola")
       // Fetch "valores" from the server
       try {
-        const response = await axios.get('http://localhost:3000/valores');
+        const response = await axios.get('https://turnos.cleverapps.io/valores');
         const valores = response.data;
 
         // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
@@ -327,19 +327,19 @@ formContainer.style.borderRadius = '10px';
             },
           ],
         back_urls: {
-          success: 'http://localhost:3001/usuarios',
-          failure: 'http://localhost:3001/usuarios?payment_failure=true',
-          pending: 'http://localhost:3001/usuarios?payment_pending=true',
+          success: 'https://localhost:3001/usuarios',
+          failure: 'https://localhost:3001/usuarios?payment_failure=true',
+          pending: 'https://localhost:3001/usuarios?payment_pending=true',
         },
       };
 
       console.log('Updated Payment Details:', preferenceData);
 
       try {
-        const response = await axios.post('http://localhost:3000/mercadopago/create_preference', preferenceData);
+        const response = await axios.post('https://turnos.cleverapps.io/mercadopago/create_preference', preferenceData);
         const preferenceId = response.data.id;
 
-        window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
+        window.location.href = `httpss://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
 
       } catch (error) {
         console.error('Error al crear la preferencia de MercadoPago:', error);
@@ -358,7 +358,7 @@ formContainer.style.borderRadius = '10px';
 
   const getEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/turnos');
+      const response = await axios.get('https://turnos.cleverapps.io/turnos');
       const formattedEvents = response.data.map(event => ({
         ...event,
         id: event.id,
@@ -381,7 +381,7 @@ formContainer.style.borderRadius = '10px';
 
     if (selectedEvent) {
       try {
-        await axios.delete(`http://localhost:3000/turnos/borrar/${selectedEvent.eventId}`);
+        await axios.delete(`https://turnos.cleverapps.io/turnos/borrar/${selectedEvent.eventId}`);
         alert('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
         getEvents();
       } catch (error) {
@@ -434,7 +434,7 @@ formContainer.style.borderRadius = '10px';
  
   
   //   try {
-  //     const response = await axios.post('http://localhost:3000/messages/send', formData);
+  //     const response = await axios.post('https://localhost/messages/send', formData);
   //     console.log('Solicitud POST exitosa:', response.data);
   //     // Realiza las acciones que necesites después de enviar los datos
   //   } catch (error) {
@@ -446,7 +446,7 @@ formContainer.style.borderRadius = '10px';
   console.log(email,hora,dia);
     try {
       // Envia los datos en la solicitud POST
-      const response = await axios.post('http://localhost:3000/messages/send', {
+      const response = await axios.post('https://turnos.cleverapps.io/messages/send', {
         email: email,
         hora: hora,
         dia: dia
@@ -462,7 +462,7 @@ formContainer.style.borderRadius = '10px';
   
   const sendWhatsAppMessage = async (phoneNumber, message) => {
     try {
-      const response = await axios.post('http://localhost:3000/messages/sendWsp', {
+      const response = await axios.post('https://turnos.cleverapps.io/messages/sendWsp', {
         phoneNumber,
         message,
       });
