@@ -8,6 +8,8 @@ import EventCard from './Evento';
 import './calendario.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './calendario.css'
+
 
 const localizer = momentLocalizer(moment);
 
@@ -78,7 +80,7 @@ const MyCalendar = ({ username }) => {
 
 
       try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+        const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -108,7 +110,7 @@ const MyCalendar = ({ username }) => {
 
 
       try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+        const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -136,7 +138,7 @@ const MyCalendar = ({ username }) => {
      
 
       try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+        const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -246,13 +248,13 @@ formContainer.style.borderRadius = '10px';
   const initializeDatabase = async () => {
     try {
       console.log('Initializing database')
-      const response = await axios.get('http://localhost:3000/valores');
+      const response = await axios.get('http://turnos.cleverapps.io/valores');
       const valores = response.data;
 
       // Check if default values are already present
       if (!valores || valores.length === 0) {
         // Insert default values
-        await axios.post('http://localhost:3000/valores', {
+        await axios.post('http://turnos.cleverapps.io/valores', {
           id: 1,
           sessionIndividual: '0',
           sessionGroup: '0'
@@ -275,7 +277,7 @@ formContainer.style.borderRadius = '10px';
   useEffect(() => {
     const getValues = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/valores');
+        const response = await axios.get('http://turnos.cleverapps.io/valores');
         const sessionIndividual = response.data[0].sessionIndividual;
         const sessionGroup = response.data[0].sessionGroup;
 
@@ -296,7 +298,7 @@ formContainer.style.borderRadius = '10px';
 
   const handleDeleteEvent = async (eventId) => {
     try {
-      await axios.delete(`http://localhost:3000/turnos/${eventId}`);
+      await axios.delete(`http://turnos.cleverapps.io/turnos/${eventId}`);
       setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
       toast.success('Turno eliminado exitosamente');
     } catch (error) {
@@ -307,7 +309,7 @@ formContainer.style.borderRadius = '10px';
 
   const getEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/turnos');
+      const response = await axios.get('http://turnos.cleverapps.io/turnos');
       const formattedEvents = response.data.map(event => ({
         ...event,
         id: event.id,
@@ -355,7 +357,7 @@ formContainer.style.borderRadius = '10px';
     };
 
     try {
-      await axios.put('http://localhost:3000/valores', eventData);
+      await axios.put('http://turnos.cleverapps.io/valores', eventData);
       console.log('Valores actualizados');
       toast.success('Valores actualizados');
 
@@ -386,6 +388,7 @@ formContainer.style.borderRadius = '10px';
   return (
     <div>
       <Calendar
+      className="custom-calendar"
        key={calendarKey} 
         localizer={localizer}
         events={events}

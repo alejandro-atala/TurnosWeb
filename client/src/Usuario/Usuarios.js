@@ -7,8 +7,8 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
+import { useNavigate } from 'react-router-dom';
+import './Usuario.css'
 const localizer = momentLocalizer(moment);
 
 const messages = {
@@ -32,6 +32,7 @@ const Usuarios = () => {
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null); // Initialize with a default value
   const [alertMessage, setAlertMessage] = useState(null); // State for alert message
   const [alertType, setAlertType] = useState('success'); // State for alert type
+  const navigate = useNavigate();
 
   const handleDOMContentLoaded = () => {
     // Call your function here that requires the DOM to be loaded
@@ -109,8 +110,8 @@ const Usuarios = () => {
         formattedEnd,
         paymentType: formData.paymentOption,
       };
+      PaymentDetailsPage();
       handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
       updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -141,9 +142,8 @@ const Usuarios = () => {
         end,
         paymentType: formData.paymentOption,
       };
-
+      PaymentDetailsPage();
       handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
-      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
       updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -174,9 +174,8 @@ const Usuarios = () => {
         end,
         paymentType: formData.paymentOption,
       };
-
+ PaymentDetailsPage();
       handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
-      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
       updatePaymentDetails(formData.paymentOption,formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -292,8 +291,103 @@ formContainer.style.borderRadius = '10px';
   };
 
 
+  const PaymentDetailsPage = () => {
+    const bankAccounts = [
+      {
+        id: 1,
+        accountNumber: '1234567890',
+        bankName: 'Banco Provincia',
+        imageSrc: '',
+      },
+      {
+        id: 2,
+        accountNumber: '0987654321',
+        bankName: 'Mercadopago',
+        imageSrc: '',
+      },
+   
+    ];
+  
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    overlay.style.zIndex = '1000';
+  
+    const formContainer = document.createElement('div');
+    formContainer.style.position = 'absolute';
+    formContainer.style.top = '50%';
+    formContainer.style.left = '50%';
+    formContainer.style.transform = 'translate(-50%, -50%)';
+    formContainer.style.backgroundColor = 'rgba(78, 202, 155,1)';
+    formContainer.style.padding = '20px';
+    formContainer.style.width = 'auto';
+    formContainer.style.textAlign = 'center';
+    formContainer.style.borderRadius = '10px';
+  
+    formContainer.innerHTML = `
+      <div className="container text-center">
+        <h2>Datos de Cuentas Bancarias</h2>
+        <div className="justify-content-center">
+          ${bankAccounts
+            .map(
+              (account) => `
+              <div key=${account.id} className="card col-md-3 m-2">
+                <img src=${account.imageSrc} alt=${''} className="card-img-top" />
+                <div className="card-body">
+                  <h3 className="card-title"> ${account.bankName}</h3>
+                  <p className="card-text">Número de cuenta: ${account.accountNumber}</p>
+                </div>
+              </div>
+            `
+            )
+            .join('')}
+        </div>
+        <div className="mt-3">
+        <button href="https://mpago.la/2YKHSk7" className="btn btn-secondary" id="pagar" target="_blank" rel="noopener noreferrer">
+          Mercadopago
+        </button>
+      </div>
+        <div className="mt-3">
+        <button type="button" class="btn btn-success mt-3" id="handleScheduleAppointment">Ya Pague</button>
+          
+          </button>
+          <button type="button" class="btn btn-secondary mt-3" id="handleCancelReservation">Cancelar</button>
+          </button>
 
-  // Update payment details based on the selected option
+       
+        
+
+        </div>
+      </div>
+    `;
+  
+    overlay.appendChild(formContainer);
+    document.body.appendChild(overlay);
+  
+    const cancelButton = formContainer.querySelector('#handleCancelReservation');
+      cancelButton.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        formContainer.remove();
+        handlePaymentFailure();
+      });
+  
+      const pagoButton = formContainer.querySelector('#handleScheduleAppointment');
+      pagoButton.addEventListener('click', () => {
+        document.body.removeChild(overlay);
+        formContainer.remove();
+      return
+      });
+  
+    return () => {
+      // Cleanup function to remove the overlay when the component unmounts
+      document.body.removeChild(overlay);
+    };
+  };
+
 
 
   // Update payment details based on the selected option
@@ -428,19 +522,7 @@ formContainer.style.borderRadius = '10px';
 
 
 
-  // const handleFormSubmit = async (formData) => {
-   
-  
  
-  
-  //   try {
-  //     const response = await axios.post('https://localhost/messages/send', formData);
-  //     console.log('Solicitud POST exitosa:', response.data);
-  //     // Realiza las acciones que necesites después de enviar los datos
-  //   } catch (error) {
-  //     console.error('Error al enviar la solicitud POST:', error);
-  //   }
-  // };
   const handleFormSubmit = async (email,hora,dia) => {
    
   console.log(email,hora,dia);
@@ -460,18 +542,7 @@ formContainer.style.borderRadius = '10px';
   };
   
   
-  const sendWhatsAppMessage = async (phoneNumber, message) => {
-    try {
-      const response = await axios.post('https://turnos.cleverapps.io/messages/sendWsp', {
-        phoneNumber,
-        message,
-      });
-  
-      console.log('WhatsApp message sent successfully:', response.data);
-    } catch (error) {
-      console.error('Error sending WhatsApp message:', error);
-    }
-  };
+ 
 
 
   return (
@@ -483,6 +554,7 @@ formContainer.style.borderRadius = '10px';
       
        </div>       </div>
       <Calendar
+      className="custom-calendar"
        messages={messages}
         localizer={localizer}
         events={events}

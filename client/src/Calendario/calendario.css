@@ -1,5 +1,7 @@
 
-
+.custom-calendar {
+  background-color: #78cbe7; /* Cambia el fondo del calendario según tus preferencias */
+}
 
 /* Update this CSS to target the form elements correctly */
 .container {

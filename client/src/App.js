@@ -6,6 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from '../src/Home/Home'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PaymentDetailsPage from '../../client/src/Pagos/Pagos';
+
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -89,6 +91,7 @@ const App = () => {
         />
            <Route path="/" element={<Home />} />
         <Route path="/usuarios" element={<Usuarios />} />
+  
 
       </Routes>
     </BrowserRouter>
