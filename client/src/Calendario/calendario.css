@@ -1,9 +1,14 @@
 
 .custom-calendar {
-  background-color: #78cbe7; /* Cambia el fondo del calendario según tus preferencias */
+  background-color: #78cbe7; /* Color de fondo del calendario */
+  color: black; /* Color del texto en el calendario */
 }
 
-/* Update this CSS to target the form elements correctly */
+.custom-calendar .rbc-today {
+  background-color: #78cbe7; 
+}
+
+
 .container {
   background-color: rgb(143, 159, 249);
   padding: 20px;
@@ -16,7 +21,6 @@
 }
 
 
-/* Optional: Style the labels and inputs */
 .container span {
   display: block;
   margin-bottom: 5px;

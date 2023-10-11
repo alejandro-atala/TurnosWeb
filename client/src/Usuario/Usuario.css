@@ -4,6 +4,9 @@
     background-color: #78cbe7; /* Cambia el fondo del calendario según tus preferencias */
   }
   
+  .custom-calendar .rbc-today {
+    background-color: #78cbe7; 
+  }
 
 
   .titulo{
