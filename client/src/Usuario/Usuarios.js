@@ -7,8 +7,8 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
+import { useNavigate } from 'react-router-dom';
+import './Usuario.css'
 const localizer = momentLocalizer(moment);
 
 const messages = {
@@ -32,6 +32,8 @@ const Usuarios = () => {
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null); // Initialize with a default value
   const [alertMessage, setAlertMessage] = useState(null); // State for alert message
   const [alertType, setAlertType] = useState('success'); // State for alert type
+  const [valores, setValores] = useState();
+  const navigate = useNavigate();
 
   const handleDOMContentLoaded = () => {
     // Call your function here that requires the DOM to be loaded
@@ -64,72 +66,104 @@ const Usuarios = () => {
   const handleSelect = async ({ start, end }) => {
 
     const formattedStart = moment(start).locale('es').format('LL LT');  // Formatea la fecha de inicio en español
-  const formattedEnd = moment(end).locale('es').format('LL LT');      // Formatea la fecha de fin en español
+    const formattedEnd = moment(end).locale('es').format('LL LT');      // Formatea la fecha de fin en español
 
-  const currentDate = moment().startOf('day');
+    const currentDate = moment()
 
-  // Verifica si la fecha seleccionada es anterior a la fecha actual
-  if (moment(start).isBefore(currentDate)) {
-    showAlert('No se pueden reservar turnos en días anteriores a la fecha actual.', 'danger');
-    return;
-  }
+    // Verifica si la fecha seleccionada es anterior a la fecha actual
+    if (moment(start).isBefore(currentDate)) {
+      showAlert('No se pueden reservar turnos en días anteriores a la fecha actual.', 'danger');
+      return;
+    }
 
-  
+
     const isCellOccupied = events.some(event => {
       return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
     });
 
-    if(isCellOccupied) {
+    if (isCellOccupied) {
 
-    const selectedEvent = events.find(event => {
-      return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
-    });
-    console.log(selectedEvent.paymentType)
-
-    const paymentType = selectedEvent.paymentType;
-
-    if (paymentType === 'Individual') {
-
-
-      const isCellOccupied = events.some(event => {
+      const selectedEvent = events.find(event => {
         return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
       });
+      console.log(selectedEvent.paymentType)
 
-      if (isCellOccupied) {
-        showAlert('Este horario ya está ocupado. Por favor, elige otro.', 'danger');
-        return;
-      }
-      const formData = await showReservationForm();
-      const eventId = generateUniqueId(6);
+      const paymentType = selectedEvent.paymentType;
 
-      const eventData = {
-        eventId,
-        ...formData,
-        formattedStart,
-        formattedEnd,
-        paymentType: formData.paymentOption,
-      };
-      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-      updatePaymentDetails(formData.paymentOption,formattedStart);
+      if (paymentType === 'Individual') {
 
-      localStorage.setItem('eventData', JSON.stringify(eventData));
 
-      try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
-        const newEvent = {
-          ...eventData,
-          id: response.data.id,
+        const isCellOccupied = events.some(event => {
+          return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
+        });
+
+        if (isCellOccupied) {
+          showAlert('Este horario ya está ocupado. Por favor, elige otro.', 'danger');
+          return;
+        }
+        const formData = await showReservationForm();
+        const eventId = generateUniqueId(6);
+
+        const eventData = {
+          eventId,
+          ...formData,
+          formattedStart,
+          formattedEnd,
+          paymentType: formData.paymentOption,
         };
-        setEvents([...events, newEvent]);
+        PaymentDetailsPage(formData.paymentOption);
+        handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
+     //   updatePaymentDetails(formData.paymentOption, formattedStart);
 
-        
+        localStorage.setItem('eventData', JSON.stringify(eventData));
 
-      } catch (error) {
-        console.error('Error al reservar turno:', error);
+        try {
+          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
+          const newEvent = {
+            ...eventData,
+            id: response.data.id,
+          };
+          setEvents([...events, newEvent]);
+
+
+
+        } catch (error) {
+          console.error('Error al reservar turno:', error);
+        }
+      }
+      else if (paymentType === 'Grupal') {
+
+        const formData = await showReservationForm();
+        const eventId = generateUniqueId(6);
+
+        const eventData = {
+          eventId,
+          ...formData,
+          start,
+          end,
+          paymentType: formData.paymentOption,
+        };
+        PaymentDetailsPage(formData.paymentOption);
+        handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
+     //   updatePaymentDetails(formData.paymentOption, formattedStart);
+
+        localStorage.setItem('eventData', JSON.stringify(eventData));
+
+
+        try {
+          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
+          const newEvent = {
+            ...eventData,
+            id: response.data.id,
+          };
+          setEvents([...events, newEvent]);
+
+        } catch (error) {
+          console.error('Error al reservar turno:', error);
+        }
       }
     }
-    else if (paymentType === 'Grupal') {
+    else {
 
       const formData = await showReservationForm();
       const eventId = generateUniqueId(6);
@@ -141,49 +175,15 @@ const Usuarios = () => {
         end,
         paymentType: formData.paymentOption,
       };
-
-      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
-      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-      updatePaymentDetails(formData.paymentOption,formattedStart);
-
-      localStorage.setItem('eventData', JSON.stringify(eventData));
-
-
-      try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
-        const newEvent = {
-          ...eventData,
-          id: response.data.id,
-        };
-        setEvents([...events, newEvent]);
-
-      } catch (error) {
-        console.error('Error al reservar turno:', error);
-      }
-    } 
-  }
-  else {
-
-      const formData = await showReservationForm();
-      const eventId = generateUniqueId(6);
-
-      const eventData = {
-        eventId,
-        ...formData,
-        start,
-        end,
-        paymentType: formData.paymentOption,
-      };
-
+      PaymentDetailsPage(formData.paymentOption);
       handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
-      await sendWhatsAppMessage(formData.telefono, `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-      updatePaymentDetails(formData.paymentOption,formattedStart);
+     // updatePaymentDetails(formData.paymentOption, formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
 
       try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+        const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -221,7 +221,7 @@ const Usuarios = () => {
       formContainer.style.zIndex = '1000';
       formContainer.style.width = 'auto';
       formContainer.style.textAlign = 'center';
-formContainer.style.borderRadius = '10px';
+      formContainer.style.borderRadius = '10px';
 
       formContainer.innerHTML = `
       <h2>Ingrese sus datos</h2>
@@ -261,7 +261,7 @@ formContainer.style.borderRadius = '10px';
           telefono: form.querySelector('#telefono').value,
           paymentOption: form.querySelector('#paymentOption').value,
         };
-       
+
         // Update the state with the selected payment option
         setSelectedPaymentOption(formData.paymentOption);
 
@@ -292,17 +292,132 @@ formContainer.style.borderRadius = '10px';
   };
 
 
+  const PaymentDetailsPage = (selectedOption) => {
+    const bankAccounts = [
+      {
+        id: 1,
+        accountNumber: '1234567890',
+        bankName: 'Banco Provincia',
+        imageSrc: '',
+      },
+      {
+        id: 2,
+        accountNumber: '0987654321',
+        bankName: 'Mercadopago',
+        imageSrc: '',
+      },
 
-  // Update payment details based on the selected option
+    ];
+
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    overlay.style.zIndex = '1000';
+
+    const formContainer = document.createElement('div');
+    formContainer.style.position = 'absolute';
+    formContainer.style.top = '50%';
+    formContainer.style.left = '50%';
+    formContainer.style.transform = 'translate(-50%, -50%)';
+    formContainer.style.backgroundColor = 'rgba(78, 202, 155,1)';
+    formContainer.style.padding = '20px';
+    formContainer.style.width = 'auto';
+    formContainer.style.textAlign = 'center';
+    formContainer.style.borderRadius = '10px';
+
+    formContainer.innerHTML = `
+    <div className="container text-center">
+      <h2>Datos de Cuentas Bancarias</h2>
+      <div className="justify-content-center">
+        ${bankAccounts
+        .map(
+          (account) => `
+            <div key=${account.id} className="card col-md-3 m-2">
+              <img src=${account.imageSrc} alt=${''} className="card-img-top" />
+              <div className="card-body">
+                <h3 className="card-title"> ${account.bankName}</h3>
+                <p className="card-text">Número de cuenta: ${account.accountNumber}</p>
+              </div>
+            </div>
+          `
+        )
+        .join('')}
+      </div>
+      <div className="mt-3">
+      <button type="button" class="btn btn-primary mt-3" id="linkpago">Link de Pago</button>
+       
+      </div>
+      <div className="mt-3">
+        <button type="button" class="btn btn-success mt-3" id="handleScheduleAppointment">Ya Pagué</button>
+        <button type="button" class="btn btn-secondary mt-3" id="handleCancelReservation">Cancelar</button>
+      </div>
+    </div>
+  `;
+    ;
+
+    overlay.appendChild(formContainer);
+    document.body.appendChild(overlay);
+
+    const cancelButton = formContainer.querySelector('#handleCancelReservation');
+    cancelButton.addEventListener('click', () => {
+      document.body.removeChild(overlay);
+      formContainer.remove();
+      handlePaymentFailure();
+    });
+
+    const pagoButton = formContainer.querySelector('#handleScheduleAppointment');
+    pagoButton.addEventListener('click', () => {
+      document.body.removeChild(overlay);
+      formContainer.remove();
+      return
+    });
+
+    const linkpago = formContainer.querySelector('#linkpago');
+    linkpago.addEventListener('click', () => {
+      console.log("linkpago clicked")
+
+
+      console.log(selectedOption)
+
+      if (selectedOption === 'Individual') {
+        openLinkInNewTab('https://mpago.la/2YKHSk7');
+      } else if (selectedOption === 'Grupal') {
+        openLinkInNewTab('https://mpago.la/31KZum5');
+      } else {
+        openLinkInNewTab('https://mpago.la/2YKHSk7');
+      }
+
+    });
+
+    return () => {
+      // Cleanup function to remove the overlay when the component unmounts
+      document.body.removeChild(overlay);
+    };
+  };
+
+  const openLinkInNewTab = (url) => {
+    const newWindow = window.open(url, '_blank');
+    if (newWindow) {
+      newWindow.focus();
+    } else {
+      console.error('No se pudo abrir una nueva pestaña.');
+    }
+  };
+
+
 
 
   // Update payment details based on the selected option
   const updatePaymentDetails = async (selectedOption, formattedStart) => {
     if (selectedOption) {
-      console.log("gola")
+
       // Fetch "valores" from the server
       try {
-        const response = await axios.get('http://localhost:3000/valores');
+        const response = await axios.get('https://turnos.cleverapps.io/valores');
         const valores = response.data;
 
         // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
@@ -326,27 +441,27 @@ formContainer.style.borderRadius = '10px';
               quantity: 1,
             },
           ],
-        back_urls: {
-          success: 'http://localhost:3001/usuarios',
-          failure: 'http://localhost:3001/usuarios?payment_failure=true',
-          pending: 'http://localhost:3001/usuarios?payment_pending=true',
-        },
-      };
+          back_urls: {
+            success: 'https://localhost:3001/usuarios',
+            failure: 'https://localhost:3001/usuarios?payment_failure=true',
+            pending: 'https://localhost:3001/usuarios?payment_pending=true',
+          },
+        };
 
-      console.log('Updated Payment Details:', preferenceData);
+        console.log('Updated Payment Details:', preferenceData);
 
-      try {
-        const response = await axios.post('http://localhost:3000/mercadopago/create_preference', preferenceData);
-        const preferenceId = response.data.id;
+        try {
+          const response = await axios.post('https://turnos.cleverapps.io/mercadopago/create_preference', preferenceData);
+          const preferenceId = response.data.id;
 
-        window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
+          window.location.href = `httpss://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
 
+        } catch (error) {
+          console.error('Error al crear la preferencia de MercadoPago:', error);
+        }
       } catch (error) {
-        console.error('Error al crear la preferencia de MercadoPago:', error);
+        console.error('Error fetching valores:', error);
       }
-    } catch (error) {
-      console.error('Error fetching valores:', error);
-    }
     } else {
       console.error('No payment option selected.');
     }
@@ -358,15 +473,15 @@ formContainer.style.borderRadius = '10px';
 
   const getEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/turnos');
+      const response = await axios.get('https://turnos.cleverapps.io/turnos');
       const formattedEvents = response.data.map(event => ({
         ...event,
         id: event.id,
         start: new Date(event.start),
         end: new Date(event.end),
-        title: event.paymentType, 
+        title: event.paymentType,
 
-  
+
       }));
       setEvents(formattedEvents);
     } catch (error) {
@@ -381,7 +496,7 @@ formContainer.style.borderRadius = '10px';
 
     if (selectedEvent) {
       try {
-        await axios.delete(`http://localhost:3000/turnos/borrar/${selectedEvent.eventId}`);
+        await axios.delete(`https://turnos.cleverapps.io/turnos/borrar/${selectedEvent.eventId}`);
         alert('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
         getEvents();
       } catch (error) {
@@ -410,7 +525,7 @@ formContainer.style.borderRadius = '10px';
 
   const eventStyleGetter = (event) => {
     let style = {};
-  
+
     if (event.paymentType === 'Grupal') {
       style = {
         backgroundColor: 'rgba(132, 78, 202, 1)',
@@ -419,71 +534,49 @@ formContainer.style.borderRadius = '10px';
         border: '1px solid #ccc',
       };
     }
-  
+
     return {
       style,
     };
   };
-  
 
 
 
-  // const handleFormSubmit = async (formData) => {
-   
-  
- 
-  
-  //   try {
-  //     const response = await axios.post('http://localhost:3000/messages/send', formData);
-  //     console.log('Solicitud POST exitosa:', response.data);
-  //     // Realiza las acciones que necesites después de enviar los datos
-  //   } catch (error) {
-  //     console.error('Error al enviar la solicitud POST:', error);
-  //   }
-  // };
-  const handleFormSubmit = async (email,hora,dia) => {
-   
-  console.log(email,hora,dia);
+
+
+  const handleFormSubmit = async (email, hora, dia) => {
+
+    console.log(email, hora, dia);
     try {
       // Envia los datos en la solicitud POST
-      const response = await axios.post('http://localhost:3000/messages/send', {
+      const response = await axios.post('https://turnos.cleverapps.io/messages/send', {
         email: email,
         hora: hora,
         dia: dia
       });
-  
+
       console.log('Solicitud POST exitosa:', response.data);
       // Realiza las acciones que necesites después de enviar los datos
     } catch (error) {
       console.error('Error al enviar la solicitud POST:', error);
     }
   };
-  
-  
-  const sendWhatsAppMessage = async (phoneNumber, message) => {
-    try {
-      const response = await axios.post('http://localhost:3000/messages/sendWsp', {
-        phoneNumber,
-        message,
-      });
-  
-      console.log('WhatsApp message sent successfully:', response.data);
-    } catch (error) {
-      console.error('Error sending WhatsApp message:', error);
-    }
-  };
+
+
+
 
 
   return (
     <div>
-     
-     <div  className=' mx-auto text-center col-3 '>
-     <ToastContainer position="top-center" autoClose={3000} />
-      <div className='mx-auto text-center col-3'>
-      
-       </div>       </div>
+
+      <div className=' mx-auto text-center col-3 '>
+        <ToastContainer position="top-center" autoClose={3000} />
+        <div className='mx-auto text-center col-3'>
+
+        </div>       </div>
       <Calendar
-       messages={messages}
+        className="custom-calendar"
+        messages={messages}
         localizer={localizer}
         events={events}
         startAccessor="start"
@@ -500,11 +593,11 @@ formContainer.style.borderRadius = '10px';
         views={['day', 'work_week']}
         eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
       /><br></br>
-     <footer className="fixed-bottom bg-light text-center">
-      <p className="m-0">Diseñado por Alejandro  - 2921-401356</p>
-    </footer>
+      <footer className="fixed-bottom bg-light text-center">
+        <p className="m-0">Diseñado por Alejandro  - 2921-401356</p>
+      </footer>
     </div>
-  
+
   );
 };
 

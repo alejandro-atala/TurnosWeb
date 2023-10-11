@@ -8,6 +8,8 @@ import EventCard from './Evento';
 import './calendario.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './calendario.css'
+
 
 const localizer = momentLocalizer(moment);
 
@@ -16,6 +18,8 @@ const MyCalendar = ({ username }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [sessionIndividual, setSessionIndividual] = useState('');
   const [sessionGroup, setSessionGroup] = useState('');
+  const [linkIndividual, setLinkIndividual] = useState('');
+  const [linkGrupal, setLinkGrupal] = useState('');
   const [calendarKey, setCalendarKey] = useState(0);
 
 
@@ -30,68 +34,97 @@ const MyCalendar = ({ username }) => {
   const handleSelect = async ({ start, end }) => {
 
     const formattedStart = moment(start).locale('es').format('LL LT');  // Formatea la fecha de inicio en español
-  const formattedEnd = moment(end).locale('es').format('LL LT');      // Formatea la fecha de fin en español
+    const formattedEnd = moment(end).locale('es').format('LL LT');      // Formatea la fecha de fin en español
 
-  const currentDate = moment().startOf('day');
+    const currentDate = moment().startOf('day');
 
-  // Verifica si la fecha seleccionada es anterior a la fecha actual
-  if (moment(start).isBefore(currentDate)) {
-    showAlert('No se pueden reservar turnos en días anteriores a la fecha actual.', 'danger');
-    return;
-  }
+    // Verifica si la fecha seleccionada es anterior a la fecha actual
+    if (moment(start).isBefore(currentDate)) {
+      showAlert('No se pueden reservar turnos en días anteriores a la fecha actual.', 'danger');
+      return;
+    }
 
-  
+
     const isCellOccupied = events.some(event => {
       return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
     });
 
-    if(isCellOccupied) {
+    if (isCellOccupied) {
 
-    const selectedEvent = events.find(event => {
-      return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
-    });
-
-
-    const paymentType = selectedEvent.paymentType;
-
-    if (paymentType === 'Individual') {
-
-
-      const isCellOccupied = events.some(event => {
+      const selectedEvent = events.find(event => {
         return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
       });
 
-      if (isCellOccupied) {
-        showAlert('Este horario ya está ocupado. Por favor, elige otro.', 'danger');
-        return;
-      }
-      const formData = await showReservationForm();
-      const eventId = generateUniqueId(6);
 
-      const eventData = {
-        eventId,
-        ...formData,
-        formattedStart,
-        formattedEnd,
-        paymentType: formData.paymentOption,
-      };
+      const paymentType = selectedEvent.paymentType;
+
+      if (paymentType === 'Individual') {
 
 
-      try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
-        const newEvent = {
-          ...eventData,
-          id: response.data.id,
+        const isCellOccupied = events.some(event => {
+          return moment(start).isBefore(event.end) && moment(end).isAfter(event.start);
+        });
+
+        if (isCellOccupied) {
+          showAlert('Este horario ya está ocupado. Por favor, elige otro.', 'danger');
+          return;
+        }
+        const formData = await showReservationForm();
+        const eventId = generateUniqueId(6);
+
+        const eventData = {
+          eventId,
+          ...formData,
+          formattedStart,
+          formattedEnd,
+          paymentType: formData.paymentOption,
         };
-        setEvents(prevEvents => [...prevEvents, newEvent]);
-       
-        
 
-      } catch (error) {
-        console.error('Error al reservar turno:', error);
+
+        try {
+          const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
+          const newEvent = {
+            ...eventData,
+            id: response.data.id,
+          };
+          setEvents(prevEvents => [...prevEvents, newEvent]);
+
+
+
+        } catch (error) {
+          console.error('Error al reservar turno:', error);
+        }
+      }
+      else if (paymentType === 'Grupal') {
+
+        const formData = await showReservationForm();
+        const eventId = generateUniqueId(6);
+
+        const eventData = {
+          eventId,
+          ...formData,
+          start,
+          end,
+          paymentType: formData.paymentOption,
+        };
+
+
+
+
+        try {
+          const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
+          const newEvent = {
+            ...eventData,
+            id: response.data.id,
+          };
+          setEvents(prevEvents => [...prevEvents, newEvent]);
+
+        } catch (error) {
+          console.error('Error al reservar turno:', error);
+        }
       }
     }
-    else if (paymentType === 'Grupal') {
+    else {
 
       const formData = await showReservationForm();
       const eventId = generateUniqueId(6);
@@ -104,45 +137,16 @@ const MyCalendar = ({ username }) => {
         paymentType: formData.paymentOption,
       };
 
- 
 
 
       try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
+        const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
         };
         setEvents(prevEvents => [...prevEvents, newEvent]);
-       
-      } catch (error) {
-        console.error('Error al reservar turno:', error);
-      }
-    } 
-  }
-  else {
 
-      const formData = await showReservationForm();
-      const eventId = generateUniqueId(6);
-
-      const eventData = {
-        eventId,
-        ...formData,
-        start,
-        end,
-        paymentType: formData.paymentOption,
-      };
-
-     
-
-      try {
-        const response = await axios.post('http://localhost:3000/turnos/reservar', eventData);
-        const newEvent = {
-          ...eventData,
-          id: response.data.id,
-        };
-        setEvents(prevEvents => [...prevEvents, newEvent]);
-       
       } catch (error) {
         console.error('Error al reservar turno:', error);
       }
@@ -150,7 +154,7 @@ const MyCalendar = ({ username }) => {
     getEvents();
   }
 
-  
+
   const showReservationForm = () => {
     return new Promise((resolve) => {
       const overlay = document.createElement('div');
@@ -171,7 +175,7 @@ const MyCalendar = ({ username }) => {
       formContainer.style.zIndex = '1000';
       formContainer.style.width = 'auto';
       formContainer.style.textAlign = 'center';
-formContainer.style.borderRadius = '10px';
+      formContainer.style.borderRadius = '10px';
 
       formContainer.innerHTML = `
       <h2>Ingrese sus datos</h2>
@@ -211,9 +215,9 @@ formContainer.style.borderRadius = '10px';
           telefono: form.querySelector('#telefono').value,
           paymentOption: form.querySelector('#paymentOption').value,
         };
-       
+
         // Update the state with the selected payment option
-     
+
 
         resolve(formData);
         document.body.removeChild(overlay);
@@ -246,16 +250,18 @@ formContainer.style.borderRadius = '10px';
   const initializeDatabase = async () => {
     try {
       console.log('Initializing database')
-      const response = await axios.get('http://localhost:3000/valores');
+      const response = await axios.get('http://turnos.cleverapps.io/valores');
       const valores = response.data;
 
       // Check if default values are already present
       if (!valores || valores.length === 0) {
         // Insert default values
-        await axios.post('http://localhost:3000/valores', {
+        await axios.post('http://turnos.cleverapps.io/valores', {
           id: 1,
           sessionIndividual: '0',
-          sessionGroup: '0'
+          sessionGroup: '0',
+          linkIndividual: '',
+          linkGrupal : ''
         });
       }
     } catch (error) {
@@ -270,12 +276,12 @@ formContainer.style.borderRadius = '10px';
     getEvents();
     toast.info(`Buen día ${username}, que tengas un excelente día!`);
   }, [username]);
-  
+
 
   useEffect(() => {
     const getValues = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/valores');
+        const response = await axios.get('http://turnos.cleverapps.io/valores');
         const sessionIndividual = response.data[0].sessionIndividual;
         const sessionGroup = response.data[0].sessionGroup;
 
@@ -296,7 +302,7 @@ formContainer.style.borderRadius = '10px';
 
   const handleDeleteEvent = async (eventId) => {
     try {
-      await axios.delete(`http://localhost:3000/turnos/${eventId}`);
+      await axios.delete(`http://turnos.cleverapps.io/turnos/${eventId}`);
       setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
       toast.success('Turno eliminado exitosamente');
     } catch (error) {
@@ -307,7 +313,7 @@ formContainer.style.borderRadius = '10px';
 
   const getEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/turnos');
+      const response = await axios.get('http://turnos.cleverapps.io/turnos');
       const formattedEvents = response.data.map(event => ({
         ...event,
         id: event.id,
@@ -324,7 +330,7 @@ formContainer.style.borderRadius = '10px';
             <div style={{ marginRight: '30px' }}>{event.nombre}</div>
             <div style={{ marginRight: '30px' }}>{event.telefono}</div>
             <div>{event.paymentType}</div>
-        
+
 
           </div>
         ),
@@ -352,10 +358,12 @@ formContainer.style.borderRadius = '10px';
     const eventData = {
       sessionIndividual,
       sessionGroup,
+      linkIndividual,
+      linkGrupal
     };
 
     try {
-      await axios.put('http://localhost:3000/valores', eventData);
+      await axios.put('http://turnos.cleverapps.io/valores', eventData);
       console.log('Valores actualizados');
       toast.success('Valores actualizados');
 
@@ -386,7 +394,8 @@ formContainer.style.borderRadius = '10px';
   return (
     <div>
       <Calendar
-       key={calendarKey} 
+        className="custom-calendar"
+        key={calendarKey}
         localizer={localizer}
         events={events}
         startAccessor="start"
@@ -403,13 +412,13 @@ formContainer.style.borderRadius = '10px';
       />
 
 
-{selectedEvent && (
+      {selectedEvent && (
         <div className="event-card-overlay" onClick={closeEventCard}>
           <EventCard event={selectedEvent} onClose={closeEventCard} />
         </div>
       )}
 
-<div className="container" style={{ maxWidth: '400px', margin: '0 auto' }}>
+      <div className="container" style={{ maxWidth: '400px', margin: '0 auto' }}>
         <div className="container d-flex flex-column justify-content-center align-items-center ">
           <div className="row">
             <div className="col">
@@ -421,7 +430,7 @@ formContainer.style.borderRadius = '10px';
             <div className="col">
               <span>Individual</span>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 placeholder="Sesión individual"
                 value={sessionIndividual || ''}
@@ -432,7 +441,7 @@ formContainer.style.borderRadius = '10px';
             <div className="col">
               <span>Grupal</span>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 placeholder="Sesión grupal"
                 value={sessionGroup || ''}
@@ -441,6 +450,34 @@ formContainer.style.borderRadius = '10px';
               />
             </div>
           </div>
+
+
+          <div className="row">
+            <div className="col">
+              <span>Link Individual</span>
+              <input
+                type="url"
+                className="form-control"
+                placeholder="Link individual"
+                value={linkIndividual || ''}
+                name="linkIndividual"
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="col">
+              <span>Link Grupal</span>
+              <input
+                type="url"
+                className="form-control"
+                placeholder="Link grupal"
+                value={linkGrupal || ''}
+                name="linkGrupal"
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+
+
 
           <div className="row">
             <div className="col">

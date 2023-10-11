@@ -12,4 +12,10 @@ export class Valores {
 
     @Column()
     sessionGroup: string;
+
+    @Column()
+    linkIndividual: string;
+
+    @Column()
+    linkGrupal: string;
 }

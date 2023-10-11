@@ -7,7 +7,9 @@ async function bootstrap() {
 
   // Configura el CORS para permitir solicitudes desde varios orígenes
   app.enableCors({
-    origin: ['http://localhost:8080','https://alejandroatala.000webhostapp.com', 'http://localhost:3001'],
+
+    origin: ['http://localhost:3002', 'http://localhost:3001','https://alejandroatala.000webhostapp.com'],
+
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
