@@ -13,7 +13,9 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const user = process.env.REACT_APP_USERNAME;
+  const pass = process.env.REACT_APP_PASSWORD;
+  
 
 
 
@@ -28,7 +30,7 @@ const App = () => {
 
   const handleLogin = () => {
     // Simulación de autenticación exitosa
-    if (username === 'Micaela' && password === '26Diciembre86') {
+    if (user === process.env.REACT_APP_USERNAME && pass === process.env.REACT_APP_PASSWORD) {
       setIsLoggedIn(true);
       toast.success('Inicio de sesión exitoso para el usuario: ' + username);
     } else {
