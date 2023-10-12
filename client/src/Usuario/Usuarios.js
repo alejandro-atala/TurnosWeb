@@ -14,7 +14,7 @@ const localizer = momentLocalizer(moment);
 const messages = {
   allDay: 'Dia Inteiro',
   previous: '<',
-  next: 'Semana Proxima',
+  next: '>',
   today: 'Hoy',
   month: 'Mes',
   week: 'Semana',
@@ -23,6 +23,8 @@ const messages = {
   date: 'Data',
   time: 'Hora',
   event: 'Evento',
+  work_week: 'Semana',
+
   showMore: (total) => `+ (${total}) Eventos`,
 
 }
@@ -34,6 +36,8 @@ const Usuarios = () => {
   const [alertType, setAlertType] = useState('success'); // State for alert type
   const [valores, setValores] = useState();
   const navigate = useNavigate();
+  const [linkIndividual, setLinkIndividual] = useState('');
+  const [linkGrupal, setLinkGrupal] = useState('');
 
   const handleDOMContentLoaded = () => {
     // Call your function here that requires the DOM to be loaded
@@ -112,7 +116,7 @@ const Usuarios = () => {
           paymentType: formData.paymentOption,
         };
         PaymentDetailsPage(formData.paymentOption);
-        handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
+        // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
      //   updatePaymentDetails(formData.paymentOption, formattedStart);
 
         localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -144,7 +148,7 @@ const Usuarios = () => {
           paymentType: formData.paymentOption,
         };
         PaymentDetailsPage(formData.paymentOption);
-        handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
+        // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
      //   updatePaymentDetails(formData.paymentOption, formattedStart);
 
         localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -176,7 +180,7 @@ const Usuarios = () => {
         paymentType: formData.paymentOption,
       };
       PaymentDetailsPage(formData.paymentOption);
-      handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
+      // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
      // updatePaymentDetails(formData.paymentOption, formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
@@ -297,14 +301,16 @@ const Usuarios = () => {
       {
         id: 1,
         accountNumber: '1234567890',
+        accountAlias: 'MIRA.COPO.TEJO',
         bankName: 'Banco Provincia',
-        imageSrc: '',
+        imageSrc: 'https://1.bp.blogspot.com/-c14djmRpuVw/Xs-gapZyabI/AAAAAAAA9zE/VraQb8VWlXs3CRJkNR2GymG-ubo40-woQCLcBGAsYHQ/s1600/CUENTA%2BDNI.jpg',
       },
       {
         id: 2,
         accountNumber: '0987654321',
+        accountAlias: 'MICAPSICOLOGA.MP',
         bankName: 'Mercadopago',
-        imageSrc: '',
+        imageSrc: 'https://logodownload.org/wp-content/uploads/2019/06/mercado-pago-logo.png',
       },
 
     ];
@@ -337,10 +343,12 @@ const Usuarios = () => {
         .map(
           (account) => `
             <div key=${account.id} className="card col-md-3 m-2">
-              <img src=${account.imageSrc} alt=${''} className="card-img-top" />
+              <img src=${account.imageSrc} alt=${''}  class="card-img-top" width="200" height="75" />
               <div className="card-body">
                 <h3 className="card-title"> ${account.bankName}</h3>
                 <p className="card-text">Número de cuenta: ${account.accountNumber}</p>
+                <p className="card-text">Alias: ${account.accountAlias}</p>
+                <hr>
               </div>
             </div>
           `
@@ -371,6 +379,7 @@ const Usuarios = () => {
 
     const pagoButton = formContainer.querySelector('#handleScheduleAppointment');
     pagoButton.addEventListener('click', () => {
+      
       document.body.removeChild(overlay);
       formContainer.remove();
       return
@@ -384,11 +393,11 @@ const Usuarios = () => {
       console.log(selectedOption)
 
       if (selectedOption === 'Individual') {
-        openLinkInNewTab('https://mpago.la/2YKHSk7');
+        openLinkInNewTab(linkIndividual);
       } else if (selectedOption === 'Grupal') {
-        openLinkInNewTab('https://mpago.la/31KZum5');
+        openLinkInNewTab(linkGrupal);
       } else {
-        openLinkInNewTab('https://mpago.la/2YKHSk7');
+        openLinkInNewTab('');
       }
 
     });
@@ -423,6 +432,7 @@ const Usuarios = () => {
         // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
         const sessionIndividual = valores[0].sessionIndividual;
         const sessionGroup = valores[0].sessionGroup;
+
 
         // Use sessionIndividual and sessionGroup in your updatePaymentDetails function
         let paymentTitle = `Reserva de turno - Sesion individual - ${formattedStart} hs`;
@@ -468,7 +478,22 @@ const Usuarios = () => {
   };
 
 
+const getValores = async () => {
+  const response = await axios.get('https://turnos.cleverapps.io/valores');
+  const valores = response.data;
 
+  // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
+  const sessionIndividual = valores[0].sessionIndividual;
+  const sessionGroup = valores[0].sessionGroup;
+  const linkIndividual = response.data[0].linkIndividual;
+  const linkGrupal = response.data[0].linkGrupal;
+
+console.log(linkIndividual,linkGrupal);
+
+
+  setLinkIndividual(linkIndividual);
+  setLinkGrupal(linkGrupal);
+}
 
 
   const getEvents = async () => {
@@ -511,6 +536,8 @@ const Usuarios = () => {
 
   useEffect(() => {
     getEvents();
+    getValores();
+    toast.info(`Mantenga presionado para reservar un turno`);
   }, []);
 
   useEffect(() => {
@@ -570,7 +597,7 @@ const Usuarios = () => {
     <div>
 
       <div className=' mx-auto text-center col-3 '>
-        <ToastContainer position="top-center" autoClose={3000} />
+        <ToastContainer position="top-center" autoClose={4000} />
         <div className='mx-auto text-center col-3'>
 
         </div>       </div>

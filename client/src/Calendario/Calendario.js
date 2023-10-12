@@ -13,6 +13,24 @@ import './calendario.css'
 
 const localizer = momentLocalizer(moment);
 
+const messages = {
+  allDay: 'Dia Inteiro',
+  previous: '<',
+  next: '>',
+  today: 'Hoy',
+  month: 'Mes',
+  week: 'Semana',
+  day: 'Dia',
+  agenda: 'Agenda',
+  date: 'Data',
+  time: 'Hora',
+  event: 'Evento',
+  work_week: 'Semana',
+
+  showMore: (total) => `+ (${total}) Eventos`,
+
+}
+
 const MyCalendar = ({ username }) => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -284,10 +302,13 @@ const MyCalendar = ({ username }) => {
         const response = await axios.get('http://turnos.cleverapps.io/valores');
         const sessionIndividual = response.data[0].sessionIndividual;
         const sessionGroup = response.data[0].sessionGroup;
-
+        const linkIndividual = response.data[0].linkIndividual;
+        const linkGrupal = response.data[0].linkGrupal;
         // Set the fetched values as the initial state for the inputs
         setSessionIndividual(sessionIndividual);
         setSessionGroup(sessionGroup);
+        setLinkIndividual(linkIndividual);
+        setLinkGrupal(linkGrupal);
       } catch (error) {
         console.error('Error fetching values:', error);
       }
@@ -408,6 +429,7 @@ console.log(eventData)
       <Calendar
         className="custom-calendar"
         key={calendarKey}
+        messages={messages}
         localizer={localizer}
         events={events}
         startAccessor="start"
