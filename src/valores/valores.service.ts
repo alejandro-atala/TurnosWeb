@@ -22,6 +22,8 @@ export class ValoresService {
       // Update the existingValor with the new values
       existingValor.sessionIndividual = valor.sessionIndividual;
       existingValor.sessionGroup = valor.sessionGroup;
+      existingValor.linkIndividual = valor.linkIndividual;
+      existingValor.linkGrupal = valor.linkGrupal;
 
       return await this.valorRepository.save(existingValor);
     } catch (error) {
@@ -34,6 +36,8 @@ export class ValoresService {
       id: 1,
       sessionIndividual: '0',
       sessionGroup: '0',
+      linkIndividual: '',
+      linkGrupal: '',
     });
     return this.valorRepository.save(defaultValues);
   }

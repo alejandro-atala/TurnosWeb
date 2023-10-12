@@ -361,7 +361,7 @@ const MyCalendar = ({ username }) => {
       linkIndividual,
       linkGrupal
     };
-
+console.log(eventData)
     try {
       await axios.put('http://turnos.cleverapps.io/valores', eventData);
       console.log('Valores actualizados');
@@ -378,11 +378,23 @@ const MyCalendar = ({ username }) => {
     const { name, value } = e.target;
     if (name === 'sessionIndividual') {
       setSessionIndividual(value);
+      
     } else if (name === 'sessionGroup') {
       setSessionGroup(value);
+     
     }
   };
 
+  const handleLinkChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'linkIndividual') {
+    
+      setLinkIndividual(value);
+    } else if (name === 'linkGrupal') {
+ 
+      setLinkGrupal(value);
+    }
+  };
 
 
   // Call the initialization function when your application starts
@@ -452,30 +464,30 @@ const MyCalendar = ({ username }) => {
           </div>
 
 
-          <div className="row">
+    
             <div className="col">
               <span>Link Individual</span>
               <input
-                type="url"
+                type="text"
                 className="form-control"
                 placeholder="Link individual"
                 value={linkIndividual || ''}
                 name="linkIndividual"
-                onChange={handleInputChange}
+                onChange={handleLinkChange}
               />
             </div>
             <div className="col">
               <span>Link Grupal</span>
               <input
-                type="url"
+                type="text"
                 className="form-control"
                 placeholder="Link grupal"
                 value={linkGrupal || ''}
                 name="linkGrupal"
-                onChange={handleInputChange}
+                onChange={handleLinkChange}
               />
             </div>
-          </div>
+         
 
 
 
