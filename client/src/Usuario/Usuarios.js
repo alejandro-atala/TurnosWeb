@@ -115,7 +115,7 @@ const Usuarios = () => {
           formattedEnd,
           paymentType: formData.paymentOption,
         };
-        PaymentDetailsPage(formData.paymentOption);
+        PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
         // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
      //   updatePaymentDetails(formData.paymentOption, formattedStart);
 
@@ -147,7 +147,7 @@ const Usuarios = () => {
           end,
           paymentType: formData.paymentOption,
         };
-        PaymentDetailsPage(formData.paymentOption);
+        PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
         // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
      //   updatePaymentDetails(formData.paymentOption, formattedStart);
 
@@ -179,7 +179,9 @@ const Usuarios = () => {
         end,
         paymentType: formData.paymentOption,
       };
-      PaymentDetailsPage(formData.paymentOption);
+
+     
+      PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
       // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
      // updatePaymentDetails(formData.paymentOption, formattedStart);
 
@@ -296,20 +298,20 @@ const Usuarios = () => {
   };
 
 
-  const PaymentDetailsPage = (selectedOption) => {
+  const PaymentDetailsPage = (selectedOption, email,   nombre, tipo,message) => {
     const bankAccounts = [
       {
         id: 1,
         accountNumber: '1234567890',
         accountAlias: 'MIRA.COPO.TEJO',
-        bankName: 'Banco Provincia',
+        // bankName: 'Banco Provincia',
         imageSrc: 'https://1.bp.blogspot.com/-c14djmRpuVw/Xs-gapZyabI/AAAAAAAA9zE/VraQb8VWlXs3CRJkNR2GymG-ubo40-woQCLcBGAsYHQ/s1600/CUENTA%2BDNI.jpg',
       },
       {
         id: 2,
         accountNumber: '0987654321',
         accountAlias: 'MICAPSICOLOGA.MP',
-        bankName: 'Mercadopago',
+        // bankName: 'Mercadopago',
         imageSrc: 'https://logodownload.org/wp-content/uploads/2019/06/mercado-pago-logo.png',
       },
 
@@ -323,7 +325,8 @@ const Usuarios = () => {
     overlay.style.height = '100%';
     overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
     overlay.style.zIndex = '1000';
-
+    overlay.style.overflowY = 'auto';  // Enable vertical scrolling
+  
     const formContainer = document.createElement('div');
     formContainer.style.position = 'absolute';
     formContainer.style.top = '50%';
@@ -331,40 +334,40 @@ const Usuarios = () => {
     formContainer.style.transform = 'translate(-50%, -50%)';
     formContainer.style.backgroundColor = 'rgba(78, 202, 155,1)';
     formContainer.style.padding = '20px';
-    formContainer.style.width = 'auto';
+    formContainer.style.width = 'auto'; // Set a fixed width or adjust as needed
+    formContainer.style.maxHeight = '100%';  // Set a max height to enable vertical scrolling
+    //formContainer.style.overflowY = 'auto';  // Enable vertical scrolling
     formContainer.style.textAlign = 'center';
     formContainer.style.borderRadius = '10px';
-
+  
     formContainer.innerHTML = `
-    <div className="container text-center">
-      <h2>Datos de Cuentas Bancarias</h2>
-      <div className="justify-content-center">
-        ${bankAccounts
-        .map(
-          (account) => `
-            <div key=${account.id} className="card col-md-3 m-2">
-              <img src=${account.imageSrc} alt=${''}  class="card-img-top" width="200" height="75" />
-              <div className="card-body">
-                <h3 className="card-title"> ${account.bankName}</h3>
-                <p className="card-text">Número de cuenta: ${account.accountNumber}</p>
-                <p className="card-text">Alias: ${account.accountAlias}</p>
-                <hr>
+      <div className="container text-center">
+ 
+        <div className="justify-content-center">
+          ${bankAccounts
+          .map(
+            (account) => `
+              <div key=${account.id} className="card col-md-3 m-2">
+                <img src=${account.imageSrc} alt=${''} class="card-img-top" style="width: ${150}px" />
+                <div className="card-body">
+                  <p className="card-text">Número de cuenta: ${account.accountNumber}</p>
+                  <p className="card-text">Alias: ${account.accountAlias}</p>
+                  <hr>
+                </div>
               </div>
-            </div>
-          `
-        )
-        .join('')}
+            `
+          )
+          .join('')}
+        </div>
+        <div className="mt-3">
+          <button type="button" class="btn btn-primary mt-3" id="linkpago">Link de Pago</button>
+        </div>
+        <div className="mt-3">
+          <button type="button" class="btn btn-success mt-3" id="handleScheduleAppointment">Ya Pagué</button>
+          <button type="button" class="btn btn-secondary mt-3" id="handleCancelReservation">Cancelar</button>
+        </div>
       </div>
-      <div className="mt-3">
-      <button type="button" class="btn btn-primary mt-3" id="linkpago">Link de Pago</button>
-       
-      </div>
-      <div className="mt-3">
-        <button type="button" class="btn btn-success mt-3" id="handleScheduleAppointment">Ya Pagué</button>
-        <button type="button" class="btn btn-secondary mt-3" id="handleCancelReservation">Cancelar</button>
-      </div>
-    </div>
-  `;
+    `;
     ;
 
     overlay.appendChild(formContainer);
@@ -379,7 +382,7 @@ const Usuarios = () => {
 
     const pagoButton = formContainer.querySelector('#handleScheduleAppointment');
     pagoButton.addEventListener('click', () => {
-      
+      handleFormSubmit(email, nombre, tipo, message);
       document.body.removeChild(overlay);
       formContainer.remove();
       return
@@ -571,15 +574,14 @@ console.log(linkIndividual,linkGrupal);
 
 
 
-  const handleFormSubmit = async (email, hora, dia) => {
+  const handleFormSubmit = async (email, nombre, paymentType, dia) => {
 
-    console.log(email, hora, dia);
     try {
       // Envia los datos en la solicitud POST
       const response = await axios.post('https://turnos.cleverapps.io/messages/send', {
         email: email,
-        hora: hora,
-        dia: dia
+        hora:  "Turno Psicologia",
+        dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día ${dia} hs`
       });
 
       console.log('Solicitud POST exitosa:', response.data);

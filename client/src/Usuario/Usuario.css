@@ -1,9 +1,12 @@
 /* MyCalendar.css */
 
 .custom-calendar {
-    background-color: #78cbe7; /* Cambia el fondo del calendario según tus preferencias */
+    background-color:  rgba(78, 202, 155, 0.618); /* Cambia el fondo del calendario según tus preferencias */
   }
   
+  .rbc-current-time-indicator{
+    display: none;
+  }
   .custom-calendar .rbc-today {
     background-color: #78cbe7; 
   }

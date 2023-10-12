@@ -47,7 +47,7 @@ const App = () => {
             isLoggedIn ? (
               <Calendario username={username} />
             ) : (
-              <div className="container col-3 bg-info  mt-5 rounded-4">
+              <div className="container rounded text-center col-xs-12 col-md-4 col-sm-3 p-5 mt-4 bg-sesion">
                 
                 <h2 className="mb-4">Login</h2>
                 <form

@@ -100,7 +100,7 @@ const MyCalendar = ({ username }) => {
 
 
         try {
-          const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -130,7 +130,7 @@ const MyCalendar = ({ username }) => {
 
 
         try {
-          const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -158,7 +158,7 @@ const MyCalendar = ({ username }) => {
 
 
       try {
-        const response = await axios.post('http://turnos.cleverapps.io/turnos/reservar', eventData);
+        const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -268,13 +268,13 @@ const MyCalendar = ({ username }) => {
   const initializeDatabase = async () => {
     try {
       console.log('Initializing database')
-      const response = await axios.get('http://turnos.cleverapps.io/valores');
+      const response = await axios.get('https://turnos.cleverapps.io/valores');
       const valores = response.data;
 
       // Check if default values are already present
       if (!valores || valores.length === 0) {
         // Insert default values
-        await axios.post('http://turnos.cleverapps.io/valores', {
+        await axios.post('https://turnos.cleverapps.io/valores', {
           id: 1,
           sessionIndividual: '0',
           sessionGroup: '0',
@@ -299,7 +299,7 @@ const MyCalendar = ({ username }) => {
   useEffect(() => {
     const getValues = async () => {
       try {
-        const response = await axios.get('http://turnos.cleverapps.io/valores');
+        const response = await axios.get('https://turnos.cleverapps.io/valores');
         const sessionIndividual = response.data[0].sessionIndividual;
         const sessionGroup = response.data[0].sessionGroup;
         const linkIndividual = response.data[0].linkIndividual;
@@ -323,7 +323,7 @@ const MyCalendar = ({ username }) => {
 
   const handleDeleteEvent = async (eventId) => {
     try {
-      await axios.delete(`http://turnos.cleverapps.io/turnos/${eventId}`);
+      await axios.delete(`https://turnos.cleverapps.io/turnos/${eventId}`);
       setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
       toast.success('Turno eliminado exitosamente');
     } catch (error) {
@@ -334,7 +334,7 @@ const MyCalendar = ({ username }) => {
 
   const getEvents = async () => {
     try {
-      const response = await axios.get('http://turnos.cleverapps.io/turnos');
+      const response = await axios.get('https://turnos.cleverapps.io/turnos');
       const formattedEvents = response.data.map(event => ({
         ...event,
         id: event.id,
@@ -384,7 +384,7 @@ const MyCalendar = ({ username }) => {
     };
 console.log(eventData)
     try {
-      await axios.put('http://turnos.cleverapps.io/valores', eventData);
+      await axios.put('https://turnos.cleverapps.io/valores', eventData);
       console.log('Valores actualizados');
       toast.success('Valores actualizados');
 
@@ -418,7 +418,22 @@ console.log(eventData)
   };
 
 
-  // Call the initialization function when your application starts
+  const eventStyleGetter = (event) => {
+    let style = {};
+
+    if (event.paymentType === 'Grupal') {
+      style = {
+        backgroundColor: 'rgba(132, 78, 202, 1)',
+        borderRadius: '5px',
+        color: 'white',
+        border: '1px solid #ccc',
+      };
+    }
+
+    return {
+      style,
+    };
+  };
 
 
 
@@ -443,6 +458,7 @@ console.log(eventData)
         min={new Date(0, 0, 0, 8, 0, 0)}  // Hora mínima: 8:00 AM
         max={new Date(0, 0, 0, 20, 0, 0)}  // Hora máxima: 6:00 PM
         views={['day', 'work_week']}
+        eventPropGetter={eventStyleGetter}
       />
 
 

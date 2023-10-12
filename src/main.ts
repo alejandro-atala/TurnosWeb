@@ -8,7 +8,7 @@ async function bootstrap() {
   // Configura el CORS para permitir solicitudes desde varios orígenes
   app.enableCors({
 
-    origin: ['https://alejandroatala.000webhostapp.com/admin', 'http://localhost:3001','https://alejandroatala.000webhostapp.com'],
+    origin: ['https://quiet-kringle-d23621.netlify.app', 'http://localhost:3001','https://alejandroatala.000webhostapp.com'],
 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
