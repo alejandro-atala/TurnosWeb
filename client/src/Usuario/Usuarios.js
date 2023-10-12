@@ -525,7 +525,7 @@ console.log(linkIndividual,linkGrupal);
     if (selectedEvent) {
       try {
         await axios.delete(`https://turnos.cleverapps.io/turnos/borrar/${selectedEvent.eventId}`);
-        alert('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
+        toast.error('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
         getEvents();
       } catch (error) {
         console.error('Error al eliminar el turno:', error);

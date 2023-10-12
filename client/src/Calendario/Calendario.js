@@ -54,7 +54,7 @@ const MyCalendar = ({ username }) => {
     const formattedStart = moment(start).locale('es').format('LL LT');  // Formatea la fecha de inicio en español
     const formattedEnd = moment(end).locale('es').format('LL LT');      // Formatea la fecha de fin en español
 
-    const currentDate = moment().startOf('day');
+    const currentDate = moment();
 
     // Verifica si la fecha seleccionada es anterior a la fecha actual
     if (moment(start).isBefore(currentDate)) {
