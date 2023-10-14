@@ -332,35 +332,38 @@ const MyCalendar = ({ username }) => {
   };
 
 
-  const getEvents = async () => {
-    try {
-      const response = await axios.get('https://turnos.cleverapps.io/turnos');
-      const formattedEvents = response.data.map(event => ({
-        ...event,
-        id: event.id,
-        start: new Date(event.start),
-        end: new Date(event.end),
-        title: (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <i
-              className="fas fa-trash-alt"
-              style={{ cursor: 'pointer', color: 'red', marginRight: '10px' }}
-              onClick={() => handleDeleteEvent(event.id)}
-            ></i>
+ const getEvents = async () => {
+  try {
+    const response = await axios.get('https://turnos.cleverapps.io/turnos');
+    const formattedEvents = response.data.map(event => ({
+      ...event,
+      id: event.id,
+      start: new Date(event.start),
+      end: new Date(event.end),
+      title: (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <i
+            className="fas fa-trash-alt"
+            style={{ cursor: 'pointer', color: 'red', marginRight: '10px' }}
+            onClick={() => handleDeleteEvent(event.id)}
+          ></i>
 
-            <div style={{ marginRight: '30px' }}>{event.nombre}</div>
-            <div style={{ marginRight: '30px' }}>{event.telefono}</div>
-            <div>{event.paymentType}</div>
-
-
+          <div style={{ marginRight: '10px' }}>
+            {event.nombre}
           </div>
-        ),
-      }));
-      setEvents(formattedEvents);
-    } catch (error) {
-      console.error('Error al obtener turnos:', error);
-    }
-  };
+
+          <div style={{ flexDirection: 'column' }}>
+            <div>{event.telefono}</div>
+          </div>
+        </div>
+      ),
+    }));
+    setEvents(formattedEvents);
+  } catch (error) {
+    console.error('Error al obtener turnos:', error);
+  }
+};
+
 
   const closeEventCard = () => {
     setSelectedEvent(null);
@@ -455,8 +458,8 @@ console.log(eventData)
         onSelectEvent={handleEventClick}
         timeslots={1} step={60}
         defaultView={'work_week'}
-        min={new Date(0, 0, 0, 8, 0, 0)}  // Hora mínima: 8:00 AM
-        max={new Date(0, 0, 0, 20, 0, 0)}  // Hora máxima: 6:00 PM
+        min={new Date(0, 0, 0, 13, 0, 0)}  // Hora mínima: 8:00 AM
+        max={new Date(0, 0, 0, 17, 0, 0)}  // Hora máxima: 6:00 PM
         views={['day', 'work_week']}
         eventPropGetter={eventStyleGetter}
       />

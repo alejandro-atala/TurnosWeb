@@ -38,7 +38,8 @@ const Usuarios = () => {
   const navigate = useNavigate();
   const [linkIndividual, setLinkIndividual] = useState('');
   const [linkGrupal, setLinkGrupal] = useState('');
-
+  const [sessionIndividual, setSessionIndividual] = useState('');
+  const [sessionGroup, setSessionGroup] = useState('');
   const handleDOMContentLoaded = () => {
     // Call your function here that requires the DOM to be loaded
 
@@ -234,7 +235,7 @@ const Usuarios = () => {
       <form id="reservationForm">
         <div class="form-group">
           <label for="nombre">Nombre:</label>
-          <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" required />
+          <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre " required />
         </div>
         <div class="form-group">
           <label for="email">Email:</label>
@@ -299,19 +300,30 @@ const Usuarios = () => {
 
 
   const PaymentDetailsPage = (selectedOption, email,   nombre, tipo,message) => {
+    console.log(selectedOption);
+
+    let monto = 0
+
+    if (selectedOption === 'Individual') {
+      monto = sessionIndividual
+    } else if (selectedOption === 'Grupal') {
+      monto = sessionGroup
+    }
+
+
     const bankAccounts = [
       {
         id: 1,
-        accountNumber: '1234567890',
-        accountAlias: 'MIRA.COPO.TEJO',
-        // bankName: 'Banco Provincia',
+        accountNumber: ' CBU: 0140341903624551649238',
+        accountAlias: 'MICA.PSICOLOGA',
+         monto: monto,
         imageSrc: 'https://1.bp.blogspot.com/-c14djmRpuVw/Xs-gapZyabI/AAAAAAAA9zE/VraQb8VWlXs3CRJkNR2GymG-ubo40-woQCLcBGAsYHQ/s1600/CUENTA%2BDNI.jpg',
       },
       {
         id: 2,
-        accountNumber: '0987654321',
-        accountAlias: 'MICAPSICOLOGA.MP',
-        // bankName: 'Mercadopago',
+        accountNumber: 'CVU: 0000003100086271244952',
+        accountAlias: 'MICA.PSICOLOGA.MP',
+        monto: monto,
         imageSrc: 'https://logodownload.org/wp-content/uploads/2019/06/mercado-pago-logo.png',
       },
 
@@ -350,8 +362,9 @@ const Usuarios = () => {
               <div key=${account.id} className="card col-md-3 m-2">
                 <img src=${account.imageSrc} alt=${''} class="card-img-top" style="width: ${150}px" />
                 <div className="card-body">
-                  <p className="card-text">Número de cuenta: ${account.accountNumber}</p>
-                  <p className="card-text">Alias: ${account.accountAlias}</p>
+                  <p className="card-text"> <b> ${account.accountNumber}</b></p>
+                  <p className="card-text">Alias: <b> ${account.accountAlias}</b></p>
+                  <p className="card-text">Valor: <b> $ ${account.monto}</b></p>
                   <hr>
                 </div>
               </div>
@@ -383,6 +396,8 @@ const Usuarios = () => {
     const pagoButton = formContainer.querySelector('#handleScheduleAppointment');
     pagoButton.addEventListener('click', () => {
       handleFormSubmit(email, nombre, tipo, message);
+      toast.success('Turno guardado. Recibira un email con los datos de la reserva');
+      getEvents();
       document.body.removeChild(overlay);
       formContainer.remove();
       return
@@ -493,7 +508,8 @@ const getValores = async () => {
 
 console.log(linkIndividual,linkGrupal);
 
-
+setSessionIndividual(sessionIndividual)
+setSessionGroup(sessionGroup)
   setLinkIndividual(linkIndividual);
   setLinkGrupal(linkGrupal);
 }
@@ -578,11 +594,18 @@ console.log(linkIndividual,linkGrupal);
 
     try {
       // Envia los datos en la solicitud POST
-      const response = await axios.post('https://turnos.cleverapps.io/messages/send', {
-        email: email,
+      let response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+        email: email ,
         hora:  "Turno Psicologia",
         dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día ${dia} hs`
       });
+
+          // Envia los datos en la solicitud POST
+          response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+            email: 'micapsicologa@gmail.com',
+            hora:  "Nuevo turno",
+            dia: `  ${nombre},  reservó un turno ${paymentType} el día ${dia} hs`
+          });
 
       console.log('Solicitud POST exitosa:', response.data);
       // Realiza las acciones que necesites después de enviar los datos
@@ -617,8 +640,8 @@ console.log(linkIndividual,linkGrupal);
         timeslots={1}
         step={60}
         defaultView={'work_week'}
-        min={new Date(0, 0, 0, 8, 0, 0)}
-        max={new Date(0, 0, 0, 20, 0, 0)}
+        min={new Date(0, 0, 0, 13, 0, 0)}
+        max={new Date(0, 0, 0, 17, 0, 0)}
         views={['day', 'work_week']}
         eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
       /><br></br>

@@ -11,8 +11,8 @@ const client = twilio(accountSid, authToken);
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'aledorrego89@gmail.com',
-    pass: 'vhgp uohc igdd sqxa'
+    user: 'micapsicologa@gmail.com',
+    pass: 'boxb vede avht ygha'
   }
 });
 
@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 
 
 export class TwilioService {
-  async sendEmail(to: string, subject: string, text: string): Promise<void> {
+  async sendEmail(para: string, subject: string, text: string): Promise<void> {
 
 
     const emailContent = `
@@ -37,14 +37,16 @@ export class TwilioService {
 
 
     console.log('enviando mail...')
-    const mailOptions = {
-      from: 'aledorrego89@gmail.com',
-      to,
+    let mailOptions = {
+      from: 'micapsicologa@gmail.com',
+      to: para, 
       subject,
       html: emailContent
     };
 console.log(mailOptions);
     await transporter.sendMail(mailOptions);
+
+
   }
 
 
