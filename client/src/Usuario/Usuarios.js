@@ -13,8 +13,8 @@ const localizer = momentLocalizer(moment);
 
 const messages = {
   allDay: 'Dia Inteiro',
-  previous: '<',
-  next: '>',
+  previous: '< Semana anterior',
+  next: 'Proxima semana >',
   today: 'Hoy',
   month: 'Mes',
   week: 'Semana',
@@ -363,8 +363,8 @@ const Usuarios = () => {
                 <img src=${account.imageSrc} alt=${''} class="card-img-top" style="width: ${150}px" />
                 <div className="card-body">
                   <p className="card-text"> <b> ${account.accountNumber}</b></p>
-                  <p className="card-text">Alias: <b> ${account.accountAlias}</b></p>
-                  <p className="card-text">Valor: <b> $ ${account.monto}</b></p>
+                  <p className="card-text" id="cbu">Alias: <b> ${account.accountAlias}</b></p>
+                  <p className="card-text" id="alias">Valor: <b> $ ${account.monto}</b></p>
                   <hr>
                 </div>
               </div>
@@ -372,6 +372,7 @@ const Usuarios = () => {
           )
           .join('')}
         </div>
+        
         <div className="mt-3">
           <button type="button" class="btn btn-primary mt-3" id="linkpago">Link de Pago</button>
         </div>
@@ -382,12 +383,15 @@ const Usuarios = () => {
       </div>
     `;
     ;
+    
 
     overlay.appendChild(formContainer);
     document.body.appendChild(overlay);
 
     const cancelButton = formContainer.querySelector('#handleCancelReservation');
     cancelButton.addEventListener('click', () => {
+ 
+
       document.body.removeChild(overlay);
       formContainer.remove();
       handlePaymentFailure();
@@ -690,8 +694,13 @@ setSessionGroup(sessionGroup)
         eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
       /><br></br>
       <footer className="fixed-bottom bg-light text-center">
-        <p className="m-0">Diseñado por Alejandro  - 2921-401356</p>
-      </footer>
+  <p className="m-0">
+    Diseñado por Alejandro -{" "}
+    <a href="https://api.whatsapp.com/send?phone=5492921401356">2921-401356</a>
+    
+  </p>
+</footer>
+
     </div>
 
   );

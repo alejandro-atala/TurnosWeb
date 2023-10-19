@@ -15,8 +15,8 @@ const localizer = momentLocalizer(moment);
 
 const messages = {
   allDay: 'Dia Inteiro',
-  previous: '<',
-  next: '>',
+  previous: '< Semana anterior',
+  next: 'Proxima semana >',
   today: 'Hoy',
   month: 'Mes',
   week: 'Semana',
