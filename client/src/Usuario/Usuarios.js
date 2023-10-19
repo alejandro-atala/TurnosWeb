@@ -597,7 +597,27 @@ setSessionGroup(sessionGroup)
       let response = await axios.post('https://turnos.cleverapps.io/messages/send', {
         email: email ,
         hora:  "Turno Psicologia",
-        dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día ${dia} hs`
+        dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día <b>${dia}</b> hs. <br>
+        <p> Con el siguiente boton podrá ingresar a la reunión en el día y horario que reservó su turno:</p>
+
+        <div style=" display: flex; justify-content: center; margin: 20px;">
+        <a href="https://meet.google.com/qxa-auqe-zzd" style="text-decoration: none;">
+          <button
+            style="
+              background: blue;
+              color: white;
+              padding: 10px 20px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+            "
+          >
+            Unirse a la reunión
+          </button>
+        </a>
+      </div>
+      
+      `
       });
 
           // Envia los datos en la solicitud POST

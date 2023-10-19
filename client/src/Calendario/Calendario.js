@@ -464,6 +464,12 @@ console.log(eventData)
         eventPropGetter={eventStyleGetter}
       />
 
+<div style={{ display: 'flex', justifyContent: 'center', margin: '20px' }}>
+          <a href="https://meet.google.com/qxa-auqe-zzd" className="btn btn-primary" style={{ background: '#4ECADI', color: 'white' }}>
+            Unirse a la reunión
+          </a>
+        </div>
+
 
       {selectedEvent && (
         <div className="event-card-overlay" onClick={closeEventCard}>
