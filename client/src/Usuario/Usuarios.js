@@ -45,7 +45,49 @@ const Usuarios = () => {
 
   };
 
+  useEffect(() => {
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment_failure');
+   
+   if (paymentStatus === 'true') {
+    handlePaymentFailure();
+    }
+   }, []);
+   
+
+
+  //  useEffect(() => {
+  //   // Check for payment status parameter in the URL
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const paymentStatus = urlParams.get('collection_status');
+  //   if (paymentStatus === 'approved') {
+  //     const paymentOption = selectedPaymentOption; // You need to define selectedPaymentOption
+  //     const email = ''; // Define the email if necessary
+  //     const nombre = ''; // Define the nombre if necessary
+  //     const message = ''; // Define the message if necessary
+  //     handleFormSubmit(email, nombre, paymentOption, message);
+  //   }
+  // }, []);
+
+  // Define a URL to handle the payment return (e.g., /payment-return)
+  useEffect(() => {
+    // Extract payment status from URL (adjust the logic for your payment gateway)
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('collection_status'); // Replace 'payment_status' with the actual parameter name
+
+    if (paymentStatus === 'approved') {
+      console.log("enviar")
+      // Payment was approved, send an email
+      const savedData = JSON.parse(localStorage.getItem('paymentData'));
+      // Send email using the saved data
+      handleFormSubmit(savedData.email, savedData.nombre, savedData.paymentType, savedData.message);
+      
+    }
+  }, []);
+
+  
+   
 
   const showAlert = (message, type) => {
     if (type === 'success') {
@@ -116,9 +158,14 @@ const Usuarios = () => {
           formattedEnd,
           paymentType: formData.paymentOption,
         };
-        PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
-        // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-     //   updatePaymentDetails(formData.paymentOption, formattedStart);
+       // PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
+       localStorage.setItem('paymentData', JSON.stringify({
+        email: formData.email,
+        nombre: formData.nombre,
+        paymentType: formData.paymentOption,
+        message: formattedStart ,      }));
+
+              updatePaymentDetails(formData.paymentOption, formattedStart,formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
 
         localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -148,9 +195,15 @@ const Usuarios = () => {
           end,
           paymentType: formData.paymentOption,
         };
-        PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
-        // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
-     //   updatePaymentDetails(formData.paymentOption, formattedStart);
+       // PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
+       localStorage.setItem('paymentData', JSON.stringify({
+        email: formData.email,
+        nombre: formData.nombre,
+        paymentType: formData.paymentOption,
+
+        message: formattedStart ,
+      }));
+             updatePaymentDetails(formData.paymentOption, formattedStart);
 
         localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -182,9 +235,14 @@ const Usuarios = () => {
       };
 
      
-      PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
-      // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
-     // updatePaymentDetails(formData.paymentOption, formattedStart);
+      //PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
+      localStorage.setItem('paymentData', JSON.stringify({
+        email: formData.email,
+        nombre: formData.nombre,
+        paymentType: formData.paymentOption,
+
+        message: formattedStart ,      }));
+            updatePaymentDetails(formData.paymentOption, formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -470,9 +528,9 @@ const Usuarios = () => {
             },
           ],
           back_urls: {
-            success: 'https://localhost:3001/usuarios',
-            failure: 'https://localhost:3001/usuarios?payment_failure=true',
-            pending: 'https://localhost:3001/usuarios?payment_pending=true',
+            success: 'http://localhost:3001/usuarios',
+          failure: 'http://localhost:3001/usuarios?payment_failure=true',
+          pending: 'http://localhost:3001/usuarios?payment_pending=true',
           },
         };
 
@@ -482,7 +540,7 @@ const Usuarios = () => {
           const response = await axios.post('https://turnos.cleverapps.io/mercadopago/create_preference', preferenceData);
           const preferenceId = response.data.id;
 
-          window.location.href = `httpss://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
+          window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
 
         } catch (error) {
           console.error('Error al crear la preferencia de MercadoPago:', error);
@@ -550,6 +608,7 @@ setSessionGroup(sessionGroup)
   };
 
 
+  
 
 
 
@@ -559,13 +618,9 @@ setSessionGroup(sessionGroup)
     toast.info(`Mantenga presionado para reservar un turno`);
   }, []);
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const paymentFailure = urlParams.get('payment_failure');
-    if (paymentFailure) {
-      handlePaymentFailure();
-    }
-  }, []);
+ 
+  
+  
 
 
 
@@ -591,7 +646,7 @@ setSessionGroup(sessionGroup)
 
 
   const handleFormSubmit = async (email, nombre, paymentType, dia) => {
-
+    console.log("enviando mail")
     try {
       // Envia los datos en la solicitud POST
       let response = await axios.post('https://turnos.cleverapps.io/messages/send', {
