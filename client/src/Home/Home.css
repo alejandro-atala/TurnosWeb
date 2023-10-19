@@ -1,3 +1,10 @@
+html {
+  overflow: auto; /* Enable scrolling for the entire HTML element */
+}
+
+body {
+  overflow: auto; /* Enable scrolling for the entire body element */
+}
 
 .home-container {
     background-color: rgba(78, 202, 155, 0.618);
@@ -15,7 +22,15 @@
     width: 300px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
   }
+  /* Add this CSS to your existing styles or update the card-content class */
+  .card-content {
+    max-height: 70vh; /* Set a maximum height for the card content */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    padding: 20px; /* Add padding for better appearance */
+  }
+
   
   .profile-image img {
     border-radius: 50%;
