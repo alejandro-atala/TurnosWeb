@@ -616,7 +616,31 @@ setSessionGroup(sessionGroup)
           </button>
         </a>
       </div>
+
+      <br><br>
+      <p>Si desea cancelar el turno, debe realizarlo con al menos <b>24 hs </b> de anticipacion para reintegrarle su dinero, dando aviso en el siguiente enlace</p>
+
+      <div style=" display: flex; justify-content: center; margin: 20px;">
+      <a href="https://api.whatsapp.com/send?phone=+542914715654&text=Hola%2C%20necesito%20cancelar%20el%20turno" style="text-decoration: none;">
+        <button
+          style="
+            background: green;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Enviar Whatsapp
+        </button>
+      </a>
+    </div>
       
+
+</a>
+
+
       `
       });
 
