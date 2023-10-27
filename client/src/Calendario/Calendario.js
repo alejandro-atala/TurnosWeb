@@ -105,6 +105,7 @@ const MyCalendar = ({ username }) => {
             ...eventData,
             id: response.data.id,
           };
+          toast.success("Turno guardado");
           setEvents(prevEvents => [...prevEvents, newEvent]);
 
 
@@ -135,6 +136,7 @@ const MyCalendar = ({ username }) => {
             ...eventData,
             id: response.data.id,
           };
+          toast.success("Turno guardado");
           setEvents(prevEvents => [...prevEvents, newEvent]);
 
         } catch (error) {
@@ -163,6 +165,7 @@ const MyCalendar = ({ username }) => {
           ...eventData,
           id: response.data.id,
         };
+        toast.success("Turno guardado");
         setEvents(prevEvents => [...prevEvents, newEvent]);
 
       } catch (error) {
