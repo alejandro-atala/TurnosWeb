@@ -123,7 +123,7 @@ const Usuarios = () => {
         localStorage.setItem('eventData', JSON.stringify(eventData));
 
         try {
-          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -156,7 +156,7 @@ const Usuarios = () => {
 
 
         try {
-          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -190,7 +190,7 @@ const Usuarios = () => {
 
 
       try {
-        const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
+        const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -448,7 +448,7 @@ const Usuarios = () => {
 
       // Fetch "valores" from the server
       try {
-        const response = await axios.get('https://turnos.cleverapps.io/valores');
+        const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/valores');
         const valores = response.data;
 
         // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
@@ -483,7 +483,7 @@ const Usuarios = () => {
         console.log('Updated Payment Details:', preferenceData);
 
         try {
-          const response = await axios.post('https://turnos.cleverapps.io/mercadopago/create_preference', preferenceData);
+          const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/mercadopago/create_preference', preferenceData);
           const preferenceId = response.data.id;
 
           window.location.href = `httpss://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
@@ -501,7 +501,7 @@ const Usuarios = () => {
 
 
   const getValores = async () => {
-    const response = await axios.get('https://turnos.cleverapps.io/valores');
+    const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/valores');
     const valores = response.data;
 
     // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
@@ -521,7 +521,7 @@ const Usuarios = () => {
 
   const getEvents = async () => {
     try {
-      const response = await axios.get('https://turnos.cleverapps.io/turnos');
+      const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos');
       const formattedEvents = response.data.map(event => ({
         ...event,
         id: event.id,
@@ -544,7 +544,7 @@ const Usuarios = () => {
 
     if (selectedEvent) {
       try {
-        await axios.delete(`https://turnos.cleverapps.io/turnos/borrar/${selectedEvent.eventId}`);
+        await axios.delete(`https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/borrar/${selectedEvent.eventId}`);
         toast.error('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
         getEvents();
       } catch (error) {
@@ -598,7 +598,7 @@ const Usuarios = () => {
 
     try {
       // Envia los datos en la solicitud POST
-      let response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+      let response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/messages/send', {
         email: email,
         hora: "Turno Psicologia",
         dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día <b>${dia}</b> hs. <br>
@@ -649,7 +649,7 @@ const Usuarios = () => {
       });
 
       // Envia los datos en la solicitud POST
-      response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+      response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/messages/send', {
         email: 'micapsicologa@gmail.com',
         hora: "Nuevo turno",
         dia: `  ${nombre},  reservó un turno ${paymentType} el día ${dia} hs`
