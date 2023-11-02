@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/es';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
+//import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -118,7 +118,7 @@ const Usuarios = () => {
         };
         PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
         // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-     //   updatePaymentDetails(formData.paymentOption, formattedStart);
+        //   updatePaymentDetails(formData.paymentOption, formattedStart);
 
         localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -150,7 +150,7 @@ const Usuarios = () => {
         };
         PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
         // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
-     //   updatePaymentDetails(formData.paymentOption, formattedStart);
+        //   updatePaymentDetails(formData.paymentOption, formattedStart);
 
         localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -181,10 +181,10 @@ const Usuarios = () => {
         paymentType: formData.paymentOption,
       };
 
-     
+
       PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
       // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
-     // updatePaymentDetails(formData.paymentOption, formattedStart);
+      // updatePaymentDetails(formData.paymentOption, formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
@@ -299,7 +299,7 @@ const Usuarios = () => {
   };
 
 
-  const PaymentDetailsPage = (selectedOption, email,   nombre, tipo,message) => {
+  const PaymentDetailsPage = (selectedOption, email, nombre, tipo, message) => {
     console.log(selectedOption);
 
     let monto = 0
@@ -316,7 +316,7 @@ const Usuarios = () => {
         id: 1,
         accountNumber: ' CBU: 0140341903624551649238',
         accountAlias: 'MICA.PSICOLOGA',
-         monto: monto,
+        monto: monto,
         imageSrc: 'https://1.bp.blogspot.com/-c14djmRpuVw/Xs-gapZyabI/AAAAAAAA9zE/VraQb8VWlXs3CRJkNR2GymG-ubo40-woQCLcBGAsYHQ/s1600/CUENTA%2BDNI.jpg',
       },
       {
@@ -338,7 +338,7 @@ const Usuarios = () => {
     overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
     overlay.style.zIndex = '1000';
     overlay.style.overflowY = 'auto';  // Enable vertical scrolling
-  
+
     const formContainer = document.createElement('div');
     formContainer.style.position = 'absolute';
     formContainer.style.top = '50%';
@@ -351,14 +351,14 @@ const Usuarios = () => {
     //formContainer.style.overflowY = 'auto';  // Enable vertical scrolling
     formContainer.style.textAlign = 'center';
     formContainer.style.borderRadius = '10px';
-  
+
     formContainer.innerHTML = `
       <div className="container text-center">
  
         <div className="justify-content-center">
           ${bankAccounts
-          .map(
-            (account) => `
+        .map(
+          (account) => `
               <div key=${account.id} className="card col-md-3 m-2">
                 <img src=${account.imageSrc} alt=${''} class="card-img-top" style="width: ${150}px" />
                 <div className="card-body">
@@ -369,8 +369,8 @@ const Usuarios = () => {
                 </div>
               </div>
             `
-          )
-          .join('')}
+        )
+        .join('')}
         </div>
         
         <div className="mt-3">
@@ -383,14 +383,14 @@ const Usuarios = () => {
       </div>
     `;
     ;
-    
+
 
     overlay.appendChild(formContainer);
     document.body.appendChild(overlay);
 
     const cancelButton = formContainer.querySelector('#handleCancelReservation');
     cancelButton.addEventListener('click', () => {
- 
+
 
       document.body.removeChild(overlay);
       formContainer.remove();
@@ -500,23 +500,23 @@ const Usuarios = () => {
   };
 
 
-const getValores = async () => {
-  const response = await axios.get('https://turnos.cleverapps.io/valores');
-  const valores = response.data;
+  const getValores = async () => {
+    const response = await axios.get('https://turnos.cleverapps.io/valores');
+    const valores = response.data;
 
-  // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
-  const sessionIndividual = valores[0].sessionIndividual;
-  const sessionGroup = valores[0].sessionGroup;
-  const linkIndividual = response.data[0].linkIndividual;
-  const linkGrupal = response.data[0].linkGrupal;
+    // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
+    const sessionIndividual = valores[0].sessionIndividual;
+    const sessionGroup = valores[0].sessionGroup;
+    const linkIndividual = response.data[0].linkIndividual;
+    const linkGrupal = response.data[0].linkGrupal;
 
-console.log(linkIndividual,linkGrupal);
+    console.log(linkIndividual, linkGrupal);
 
-setSessionIndividual(sessionIndividual)
-setSessionGroup(sessionGroup)
-  setLinkIndividual(linkIndividual);
-  setLinkGrupal(linkGrupal);
-}
+    setSessionIndividual(sessionIndividual)
+    setSessionGroup(sessionGroup)
+    setLinkIndividual(linkIndividual);
+    setLinkGrupal(linkGrupal);
+  }
 
 
   const getEvents = async () => {
@@ -527,7 +527,7 @@ setSessionGroup(sessionGroup)
         id: event.id,
         start: new Date(event.start),
         end: new Date(event.end),
-        title: event.paymentType,
+        title: "Ocupado",
 
 
       }));
@@ -560,7 +560,7 @@ setSessionGroup(sessionGroup)
   useEffect(() => {
     getEvents();
     getValores();
-    toast.info(`Mantenga presionado para reservar un turno`);
+    toast.success(`Mantenga presionado para reservar un turno`, { theme: "colored" });
   }, []);
 
   useEffect(() => {
@@ -599,8 +599,8 @@ setSessionGroup(sessionGroup)
     try {
       // Envia los datos en la solicitud POST
       let response = await axios.post('https://turnos.cleverapps.io/messages/send', {
-        email: email ,
-        hora:  "Turno Psicologia",
+        email: email,
+        hora: "Turno Psicologia",
         dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día <b>${dia}</b> hs. <br>
         <p> Con el siguiente boton podrá ingresar a la reunión en el día y horario que reservó su turno:</p>
 
@@ -648,12 +648,12 @@ setSessionGroup(sessionGroup)
       `
       });
 
-          // Envia los datos en la solicitud POST
-          response = await axios.post('https://turnos.cleverapps.io/messages/send', {
-            email: 'micapsicologa@gmail.com',
-            hora:  "Nuevo turno",
-            dia: `  ${nombre},  reservó un turno ${paymentType} el día ${dia} hs`
-          });
+      // Envia los datos en la solicitud POST
+      response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+        email: 'micapsicologa@gmail.com',
+        hora: "Nuevo turno",
+        dia: `  ${nombre},  reservó un turno ${paymentType} el día ${dia} hs`
+      });
 
       console.log('Solicitud POST exitosa:', response.data);
       // Realiza las acciones que necesites después de enviar los datos
@@ -670,11 +670,12 @@ setSessionGroup(sessionGroup)
     <div>
 
       <div className=' mx-auto text-center col-3 '>
-        <ToastContainer position="top-center" autoClose={4000} />
+        <ToastContainer position="top-center" autoClose={5000} />
         <div className='mx-auto text-center col-3'>
 
         </div>       </div>
       <Calendar
+
         className="custom-calendar"
         messages={messages}
         localizer={localizer}
@@ -694,12 +695,12 @@ setSessionGroup(sessionGroup)
         eventPropGetter={eventStyleGetter}  // Aplica estilos a los eventos
       /><br></br>
       <footer className="fixed-bottom bg-light text-center">
-  <p className="m-0">
-    Diseñado por Alejandro -{" "}
-    <a href="https://api.whatsapp.com/send?phone=5492921401356">2921-401356</a>
-    
-  </p>
-</footer>
+        <p className="m-0">
+          Diseñado por Alejandro -{" "}
+          <a href="https://api.whatsapp.com/send?phone=5492921401356">2921-401356</a>
+
+        </p>
+      </footer>
 
     </div>
 

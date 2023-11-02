@@ -1,7 +1,10 @@
 /* MyCalendar.css */
 
 .custom-calendar {
-    background-color:  rgba(78, 202, 155, 0.618); /* Cambia el fondo del calendario según tus preferencias */
+    background-color:  rgba(78, 202, 155, 0.618); 
+  
+
+
   }
   
   .rbc-current-time-indicator{
@@ -18,3 +21,14 @@
     padding-bottom: 10px;
   }
 
+  .toast.success {
+    font-weight: bold;
+  }
+
+ 
+  .react-calendar__tile--now {
+    background: #6f48eb33;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #6f48eb;
+   }

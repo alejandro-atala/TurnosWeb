@@ -448,7 +448,7 @@ console.log(eventData)
   return (
     <div>
       <Calendar
-        className="custom-calendar"
+        className="custom-calendar2"
         key={calendarKey}
         messages={messages}
         localizer={localizer}

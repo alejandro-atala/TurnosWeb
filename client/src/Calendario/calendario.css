@@ -1,8 +1,8 @@
 
-.custom-calendar {
-  background-color: rgba(78, 202, 155, 0.618); /* Color de fondo del calendario */
-  color: black; /* Color del texto en el calendario */
-}
+ .custom-calendar2 {
+  background-color: rgba(78, 202, 155, 0.618); 
+ 
+} 
 
 .custom-calendar .rbc-today {
   background-color: #78cbe7; 
