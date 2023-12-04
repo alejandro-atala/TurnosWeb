@@ -45,7 +45,49 @@ const Usuarios = () => {
 
   };
 
+  useEffect(() => {
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment_failure');
+   
+   if (paymentStatus === 'true') {
+    handlePaymentFailure();
+    }
+   }, []);
+   
+
+
+  //  useEffect(() => {
+  //   // Check for payment status parameter in the URL
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const paymentStatus = urlParams.get('collection_status');
+  //   if (paymentStatus === 'approved') {
+  //     const paymentOption = selectedPaymentOption; // You need to define selectedPaymentOption
+  //     const email = ''; // Define the email if necessary
+  //     const nombre = ''; // Define the nombre if necessary
+  //     const message = ''; // Define the message if necessary
+  //     handleFormSubmit(email, nombre, paymentOption, message);
+  //   }
+  // }, []);
+
+  // Define a URL to handle the payment return (e.g., /payment-return)
+  useEffect(() => {
+    // Extract payment status from URL (adjust the logic for your payment gateway)
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('collection_status'); // Replace 'payment_status' with the actual parameter name
+
+    if (paymentStatus === 'approved') {
+      console.log("enviar")
+      // Payment was approved, send an email
+      const savedData = JSON.parse(localStorage.getItem('paymentData'));
+      // Send email using the saved data
+      handleFormSubmit(savedData.email, savedData.nombre, savedData.paymentType, savedData.message);
+      
+    }
+  }, []);
+
+  
+   
 
   const showAlert = (message, type) => {
     if (type === 'success') {
@@ -116,14 +158,19 @@ const Usuarios = () => {
           formattedEnd,
           paymentType: formData.paymentOption,
         };
-        PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
-        // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
-        //   updatePaymentDetails(formData.paymentOption, formattedStart);
+       // PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
+       localStorage.setItem('paymentData', JSON.stringify({
+        email: formData.email,
+        nombre: formData.nombre,
+        paymentType: formData.paymentOption,
+        message: formattedStart ,      }));
+
+              updatePaymentDetails(formData.paymentOption, formattedStart,formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs`);
 
         localStorage.setItem('eventData', JSON.stringify(eventData));
 
         try {
-          const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -148,15 +195,21 @@ const Usuarios = () => {
           end,
           paymentType: formData.paymentOption,
         };
-        PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
-        // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno  ${eventData.paymentType} el día ${formattedStart} hs`);
-        //   updatePaymentDetails(formData.paymentOption, formattedStart);
+       // PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
+       localStorage.setItem('paymentData', JSON.stringify({
+        email: formData.email,
+        nombre: formData.nombre,
+        paymentType: formData.paymentOption,
+
+        message: formattedStart ,
+      }));
+             updatePaymentDetails(formData.paymentOption, formattedStart);
 
         localStorage.setItem('eventData', JSON.stringify(eventData));
 
 
         try {
-          const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -181,16 +234,21 @@ const Usuarios = () => {
         paymentType: formData.paymentOption,
       };
 
+     
+      //PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
+      localStorage.setItem('paymentData', JSON.stringify({
+        email: formData.email,
+        nombre: formData.nombre,
+        paymentType: formData.paymentOption,
 
-      PaymentDetailsPage(formData.paymentOption, formData.email, formData.nombre, eventData.paymentType, formattedStart);
-      // handleFormSubmit(formData.email, "Turno Psicologia", `Hola ${formData.nombre}, usted reservó un turno ${eventData.paymentType} el día ${formattedStart} hs `);
-      // updatePaymentDetails(formData.paymentOption, formattedStart);
+        message: formattedStart ,      }));
+            updatePaymentDetails(formData.paymentOption, formattedStart);
 
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
 
       try {
-        const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
+        const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -299,7 +357,7 @@ const Usuarios = () => {
   };
 
 
-  const PaymentDetailsPage = (selectedOption, email, nombre, tipo, message) => {
+  const PaymentDetailsPage = (selectedOption, email,   nombre, tipo,message) => {
     console.log(selectedOption);
 
     let monto = 0
@@ -316,7 +374,7 @@ const Usuarios = () => {
         id: 1,
         accountNumber: ' CBU: 0140341903624551649238',
         accountAlias: 'MICA.PSICOLOGA',
-        monto: monto,
+         monto: monto,
         imageSrc: 'https://1.bp.blogspot.com/-c14djmRpuVw/Xs-gapZyabI/AAAAAAAA9zE/VraQb8VWlXs3CRJkNR2GymG-ubo40-woQCLcBGAsYHQ/s1600/CUENTA%2BDNI.jpg',
       },
       {
@@ -338,7 +396,7 @@ const Usuarios = () => {
     overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
     overlay.style.zIndex = '1000';
     overlay.style.overflowY = 'auto';  // Enable vertical scrolling
-
+  
     const formContainer = document.createElement('div');
     formContainer.style.position = 'absolute';
     formContainer.style.top = '50%';
@@ -351,28 +409,27 @@ const Usuarios = () => {
     //formContainer.style.overflowY = 'auto';  // Enable vertical scrolling
     formContainer.style.textAlign = 'center';
     formContainer.style.borderRadius = '10px';
-
+  
     formContainer.innerHTML = `
       <div className="container text-center">
  
         <div className="justify-content-center">
           ${bankAccounts
-        .map(
-          (account) => `
+          .map(
+            (account) => `
               <div key=${account.id} className="card col-md-3 m-2">
                 <img src=${account.imageSrc} alt=${''} class="card-img-top" style="width: ${150}px" />
                 <div className="card-body">
                   <p className="card-text"> <b> ${account.accountNumber}</b></p>
-                  <p className="card-text" id="cbu">Alias: <b> ${account.accountAlias}</b></p>
-                  <p className="card-text" id="alias">Valor: <b> $ ${account.monto}</b></p>
+                  <p className="card-text">Alias: <b> ${account.accountAlias}</b></p>
+                  <p className="card-text">Valor: <b> $ ${account.monto}</b></p>
                   <hr>
                 </div>
               </div>
             `
-        )
-        .join('')}
+          )
+          .join('')}
         </div>
-        
         <div className="mt-3">
           <button type="button" class="btn btn-primary mt-3" id="linkpago">Link de Pago</button>
         </div>
@@ -384,14 +441,11 @@ const Usuarios = () => {
     `;
     ;
 
-
     overlay.appendChild(formContainer);
     document.body.appendChild(overlay);
 
     const cancelButton = formContainer.querySelector('#handleCancelReservation');
     cancelButton.addEventListener('click', () => {
-
-
       document.body.removeChild(overlay);
       formContainer.remove();
       handlePaymentFailure();
@@ -448,7 +502,7 @@ const Usuarios = () => {
 
       // Fetch "valores" from the server
       try {
-        const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/valores');
+        const response = await axios.get('https://turnos.cleverapps.io/valores');
         const valores = response.data;
 
         // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
@@ -474,19 +528,19 @@ const Usuarios = () => {
             },
           ],
           back_urls: {
-            success: 'https://localhost:3001/usuarios',
-            failure: 'https://localhost:3001/usuarios?payment_failure=true',
-            pending: 'https://localhost:3001/usuarios?payment_pending=true',
+            success: 'http://localhost:3001/usuarios',
+          failure: 'http://localhost:3001/usuarios?payment_failure=true',
+          pending: 'http://localhost:3001/usuarios?payment_pending=true',
           },
         };
 
         console.log('Updated Payment Details:', preferenceData);
 
         try {
-          const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/mercadopago/create_preference', preferenceData);
+          const response = await axios.post('https://turnos.cleverapps.io/mercadopago/create_preference', preferenceData);
           const preferenceId = response.data.id;
-
-          window.location.href = `httpss://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
+console.log(preferenceId, response.data)
+          window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
 
         } catch (error) {
           console.error('Error al crear la preferencia de MercadoPago:', error);
@@ -500,34 +554,34 @@ const Usuarios = () => {
   };
 
 
-  const getValores = async () => {
-    const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/valores');
-    const valores = response.data;
+const getValores = async () => {
+  const response = await axios.get('https://turnos.cleverapps.io/valores');
+  const valores = response.data;
 
-    // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
-    const sessionIndividual = valores[0].sessionIndividual;
-    const sessionGroup = valores[0].sessionGroup;
-    const linkIndividual = response.data[0].linkIndividual;
-    const linkGrupal = response.data[0].linkGrupal;
+  // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
+  const sessionIndividual = valores[0].sessionIndividual;
+  const sessionGroup = valores[0].sessionGroup;
+  const linkIndividual = response.data[0].linkIndividual;
+  const linkGrupal = response.data[0].linkGrupal;
 
-    console.log(linkIndividual, linkGrupal);
+console.log(linkIndividual,linkGrupal);
 
-    setSessionIndividual(sessionIndividual)
-    setSessionGroup(sessionGroup)
-    setLinkIndividual(linkIndividual);
-    setLinkGrupal(linkGrupal);
-  }
+setSessionIndividual(sessionIndividual)
+setSessionGroup(sessionGroup)
+  setLinkIndividual(linkIndividual);
+  setLinkGrupal(linkGrupal);
+}
 
 
   const getEvents = async () => {
     try {
-      const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos');
+      const response = await axios.get('https://turnos.cleverapps.io/turnos');
       const formattedEvents = response.data.map(event => ({
         ...event,
         id: event.id,
         start: new Date(event.start),
         end: new Date(event.end),
-        title: "Ocupado",
+        title: event.paymentType,
 
 
       }));
@@ -544,7 +598,7 @@ const Usuarios = () => {
 
     if (selectedEvent) {
       try {
-        await axios.delete(`https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/borrar/${selectedEvent.eventId}`);
+        await axios.delete(`https://turnos.cleverapps.io/turnos/borrar/${selectedEvent.eventId}`);
         toast.error('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
         getEvents();
       } catch (error) {
@@ -554,22 +608,19 @@ const Usuarios = () => {
   };
 
 
+  
 
 
 
   useEffect(() => {
     getEvents();
     getValores();
-    toast.success(`Mantenga presionado para reservar un turno`, { theme: "colored" });
+    toast.info(`Mantenga presionado para reservar un turno`);
   }, []);
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const paymentFailure = urlParams.get('payment_failure');
-    if (paymentFailure) {
-      handlePaymentFailure();
-    }
-  }, []);
+ 
+  
+  
 
 
 
@@ -595,65 +646,21 @@ const Usuarios = () => {
 
 
   const handleFormSubmit = async (email, nombre, paymentType, dia) => {
-
+    console.log("enviando mail")
     try {
       // Envia los datos en la solicitud POST
-      let response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/messages/send', {
-        email: email,
-        hora: "Turno Psicologia",
-        dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día <b>${dia}</b> hs. <br>
-        <p> Con el siguiente boton podrá ingresar a la reunión en el día y horario que reservó su turno:</p>
-
-        <div style=" display: flex; justify-content: center; margin: 20px;">
-        <a href="https://meet.google.com/qxa-auqe-zzd" style="text-decoration: none;">
-          <button
-            style="
-              background: blue;
-              color: white;
-              padding: 10px 20px;
-              border: none;
-              border-radius: 5px;
-              cursor: pointer;
-            "
-          >
-            Unirse a la reunión
-          </button>
-        </a>
-      </div>
-
-      <br><br>
-      <p>Si desea cancelar el turno, debe realizarlo con al menos <b>24 hs </b> de anticipacion para reintegrarle su dinero, dando aviso en el siguiente enlace</p>
-
-      <div style=" display: flex; justify-content: center; margin: 20px;">
-      <a href="https://api.whatsapp.com/send?phone=+542914715654&text=Hola%2C%20necesito%20cancelar%20el%20turno" style="text-decoration: none;">
-        <button
-          style="
-            background: green;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-          "
-        >
-          Enviar Whatsapp
-        </button>
-      </a>
-    </div>
-      
-
-</a>
-
-
-      `
+      let response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+        email: email ,
+        hora:  "Turno Psicologia",
+        dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día ${dia} hs`
       });
 
-      // Envia los datos en la solicitud POST
-      response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/messages/send', {
-        email: 'micapsicologa@gmail.com',
-        hora: "Nuevo turno",
-        dia: `  ${nombre},  reservó un turno ${paymentType} el día ${dia} hs`
-      });
+          // Envia los datos en la solicitud POST
+          response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+            email: 'micapsicologa@gmail.com',
+            hora:  "Nuevo turno",
+            dia: `  ${nombre},  reservó un turno ${paymentType} el día ${dia} hs`
+          });
 
       console.log('Solicitud POST exitosa:', response.data);
       // Realiza las acciones que necesites después de enviar los datos
@@ -661,7 +668,6 @@ const Usuarios = () => {
       console.error('Error al enviar la solicitud POST:', error);
     }
   };
-
 
 
 

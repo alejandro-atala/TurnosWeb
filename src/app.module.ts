@@ -21,6 +21,21 @@ import { ValoresModule } from './valores/valores.module';
       ],
       synchronize: true
     }),
+
+    // @Module({
+    //   imports: [
+    //     TypeOrmModule.forRoot({
+    //       type: "mysql",
+    //       host: "localhost",
+    //       port: 3306,
+    //       username: "root",
+    //       password: "root",
+    //       database: "turnero",
+    //       entities: [
+    //         "dist/**/**.entity{.ts,.js}",
+    //       ],
+    //       synchronize: true
+    //     }),
     TurnoModule,
     MercadoPagoModule,
     TwilioModule,
