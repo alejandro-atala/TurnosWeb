@@ -528,9 +528,9 @@ const Usuarios = () => {
             },
           ],
           back_urls: {
-            success: 'http://localhost:3001/usuarios',
-          failure: 'http://localhost:3001/usuarios?payment_failure=true',
-          pending: 'http://localhost:3001/usuarios?payment_pending=true',
+            success: 'https://turnos-web-2ab01.web.app/usuarios',
+          failure: 'https://turnos-web-2ab01.web.app/usuarios?payment_failure=true',
+          pending: 'https://turnos-web-2ab01.web.app/usuarios?payment_pending=true',
           },
         };
 
