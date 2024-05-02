@@ -100,7 +100,7 @@ const MyCalendar = ({ username }) => {
 
 
         try {
-          const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://nodejs-production-9ea4.up.railway.app/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -131,7 +131,7 @@ const MyCalendar = ({ username }) => {
 
 
         try {
-          const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://nodejs-production-9ea4.up.railway.app/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -160,7 +160,7 @@ const MyCalendar = ({ username }) => {
 
 
       try {
-        const response = await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/reservar', eventData);
+        const response = await axios.post('https://nodejs-production-9ea4.up.railway.app/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -271,13 +271,13 @@ const MyCalendar = ({ username }) => {
   const initializeDatabase = async () => {
     try {
       console.log('Initializing database')
-      const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/valores');
+      const response = await axios.get('https://nodejs-production-9ea4.up.railway.app/valores');
       const valores = response.data;
 
       // Check if default values are already present
       if (!valores || valores.length === 0) {
         // Insert default values
-        await axios.post('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/valores', {
+        await axios.post('https://nodejs-production-9ea4.up.railway.app/valores', {
           id: 1,
           sessionIndividual: '0',
           sessionGroup: '0',
@@ -302,7 +302,7 @@ const MyCalendar = ({ username }) => {
   useEffect(() => {
     const getValues = async () => {
       try {
-        const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/valores');
+        const response = await axios.get('https://nodejs-production-9ea4.up.railway.app/valores');
         const sessionIndividual = response.data[0].sessionIndividual;
         const sessionGroup = response.data[0].sessionGroup;
         const linkIndividual = response.data[0].linkIndividual;
@@ -326,7 +326,7 @@ const MyCalendar = ({ username }) => {
 
   const handleDeleteEvent = async (eventId) => {
     try {
-      await axios.delete(`https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos/${eventId}`);
+      await axios.delete(`https://nodejs-production-9ea4.up.railway.app/turnos/${eventId}`);
       setEvents(prevEvents => prevEvents.filter(event => event.id !== eventId));
       toast.success('Turno eliminado exitosamente');
     } catch (error) {
@@ -337,7 +337,7 @@ const MyCalendar = ({ username }) => {
 
  const getEvents = async () => {
   try {
-    const response = await axios.get('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/turnos');
+    const response = await axios.get('https://nodejs-production-9ea4.up.railway.app/turnos');
     const formattedEvents = response.data.map(event => ({
       ...event,
       id: event.id,
@@ -390,7 +390,7 @@ const MyCalendar = ({ username }) => {
     };
 console.log(eventData)
     try {
-      await axios.put('https://app-7549a1e7-113a-4e14-a3af-e0ac112b30b0.cleverapps.io/valores', eventData);
+      await axios.put('https://nodejs-production-9ea4.up.railway.app/valores', eventData);
       console.log('Valores actualizados');
       toast.success('Valores actualizados');
 
