@@ -170,7 +170,7 @@ const Usuarios = () => {
         localStorage.setItem('eventData', JSON.stringify(eventData));
 
         try {
-          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://nodejs-production-9ea4.up.railway.app/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -209,7 +209,7 @@ const Usuarios = () => {
 
 
         try {
-          const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
+          const response = await axios.post('https://nodejs-production-9ea4.up.railway.app/turnos/reservar', eventData);
           const newEvent = {
             ...eventData,
             id: response.data.id,
@@ -248,7 +248,7 @@ const Usuarios = () => {
 
 
       try {
-        const response = await axios.post('https://turnos.cleverapps.io/turnos/reservar', eventData);
+        const response = await axios.post('https://nodejs-production-9ea4.up.railway.app/turnos/reservar', eventData);
         const newEvent = {
           ...eventData,
           id: response.data.id,
@@ -502,7 +502,7 @@ const Usuarios = () => {
 
       // Fetch "valores" from the server
       try {
-        const response = await axios.get('https://turnos.cleverapps.io/valores');
+        const response = await axios.get('https://nodejs-production-9ea4.up.railway.app/valores');
         const valores = response.data;
 
         // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
@@ -537,7 +537,7 @@ const Usuarios = () => {
         console.log('Updated Payment Details:', preferenceData);
 
         try {
-          const response = await axios.post('https://turnos.cleverapps.io/mercadopago/create_preference', preferenceData);
+          const response = await axios.post('https://nodejs-production-9ea4.up.railway.app/mercadopago/create_preference', preferenceData);
           const preferenceId = response.data.id;
 console.log(preferenceId, response.data)
           window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?preference_id=${preferenceId}`;
@@ -555,7 +555,7 @@ console.log(preferenceId, response.data)
 
 
 const getValores = async () => {
-  const response = await axios.get('https://turnos.cleverapps.io/valores');
+  const response = await axios.get('https://nodejs-production-9ea4.up.railway.app/valores');
   const valores = response.data;
 
   // Assuming your "valores" response is an array with sessionIndividual and sessionGroup values
@@ -575,7 +575,7 @@ setSessionGroup(sessionGroup)
 
   const getEvents = async () => {
     try {
-      const response = await axios.get('https://turnos.cleverapps.io/turnos');
+      const response = await axios.get('https://nodejs-production-9ea4.up.railway.app/turnos');
       const formattedEvents = response.data.map(event => ({
         ...event,
         id: event.id,
@@ -598,7 +598,7 @@ setSessionGroup(sessionGroup)
 
     if (selectedEvent) {
       try {
-        await axios.delete(`https://turnos.cleverapps.io/turnos/borrar/${selectedEvent.eventId}`);
+        await axios.delete(`https://nodejs-production-9ea4.up.railway.app/turnos/borrar/${selectedEvent.eventId}`);
         toast.error('El turno ha sido eliminado debido a que el pago no se realizó correctamente.');
         getEvents();
       } catch (error) {
@@ -649,14 +649,14 @@ setSessionGroup(sessionGroup)
     console.log("enviando mail")
     try {
       // Envia los datos en la solicitud POST
-      let response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+      let response = await axios.post('https://nodejs-production-9ea4.up.railway.app/messages/send', {
         email: email ,
         hora:  "Turno Psicologia",
         dia: ` Hola ${nombre}, usted reservó un turno ${paymentType} el día ${dia} hs`
       });
 
           // Envia los datos en la solicitud POST
-          response = await axios.post('https://turnos.cleverapps.io/messages/send', {
+          response = await axios.post('https://nodejs-production-9ea4.up.railway.app/messages/send', {
             email: 'micapsicologa@gmail.com',
             hora:  "Nuevo turno",
             dia: `  ${nombre},  reservó un turno ${paymentType} el día ${dia} hs`
